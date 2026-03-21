@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="header-section">
+    <h1>All Students</h1>
+</div>
+
+<div class="table-container">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Roll Number</th>
+                <th>Name</th>
+                <th>Department</th>
+                <th>Semester</th>
+                <th>Predicted Attendance</th>
+                <th>Risk Score</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for student in students %}
+            <tr>
+                <td>{{ student.roll_number }}</td>
+                <td>{{ student.name }}</td>
+                <td>{{ student.department }}</td>
+                <td>{{ student.semester }}</td>
+                <td>
+                    <span class="badge badge-{% if student.predicted_attendance >= 85 %}success{% elif student.predicted_attendance >= 75 %}warning{% else %}danger{% endif %}">
+                        {{ "%.1f"|format(student.predicted_attendance) }}%
+                    </span>
+                </td>
+                <td>
+                    <span class="badge risk-{{ student.risk_score|lower }}">{{ student.risk_score }}</span>
+                </td>
+                <td>
+                    <a href="{{ url_for('admin.student_detail', id=student.id) }}" class="btn btn-small">View Details</a>
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="7">No students found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

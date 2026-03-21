@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="header-section">
+    <h1>Admin Dashboard</h1>
+    <p class="subtitle">Overview of student attendance and risks.</p>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <h3>Total Students</h3>
+        <p class="stat-value">{{ total_students }}</p>
+    </div>
+    <div class="stat-card risk-low">
+        <h3>Low Risk</h3>
+        <p class="stat-value">{{ low_risk }}</p>
+    </div>
+    <div class="stat-card risk-medium">
+        <h3>Medium Risk</h3>
+        <p class="stat-value">{{ medium_risk }}</p>
+    </div>
+    <div class="stat-card risk-high">
+        <h3>High Risk</h3>
+        <p class="stat-value">{{ high_risk }}</p>
+    </div>
+    <div class="stat-card risk-critical">
+        <h3>Critical Risk</h3>
+        <p class="stat-value">{{ critical_risk }}</p>
+    </div>
+</div>
+
+<div class="recent-alerts">
+    <h2>Recent Alerts</h2>
+    {% if recent_alerts %}
+        <ul class="alert-list">
+            {% for alert in recent_alerts %}
+                <li class="alert-item alert-{{ alert.alert_type }}">
+                    <strong>{{ alert.student.name }} ({{ alert.student.roll_number }}):</strong> 
+                    {{ alert.message }}
+                    <span class="date">{{ alert.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No recent alerts.</p>
+    {% endif %}
+</div>
+{% endblock %}

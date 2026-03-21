@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="header-section">
+    <h1>All Alerts</h1>
+</div>
+
+<div class="card">
+    {% if alerts %}
+        <ul class="alert-list">
+            {% for alert in alerts %}
+                <li class="alert-item alert-{{ alert.alert_type }}">
+                    <strong>{{ alert.student.name }} ({{ alert.student.roll_number }}):</strong> 
+                    {{ alert.message }}
+                    <div class="meta">
+                        <span class="badge badge-secondary">{{ alert.alert_type|title }}</span>
+                        <span class="date">{{ alert.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No alerts present in the system.</p>
+    {% endif %}
+</div>
+{% endblock %}

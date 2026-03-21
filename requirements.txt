@@ -1,0 +1,11 @@
+Flask
+Flask-SQLAlchemy
+Flask-Migrate
+Flask-Login
+PyMySQL
+crewai[google-genai]
+pandas
+scikit-learn
+python-dotenv
+cryptography
+google-generativeai

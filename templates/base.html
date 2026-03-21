@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Attendance System</title>
+    <!-- Modern UI Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">Attendance AI</div>
+        <div class="nav-links">
+            {% if current_user.is_authenticated %}
+                {% if current_user.role == 'admin' %}
+                    <a href="{{ url_for('admin.dashboard') }}" class="{{ 'active' if 'dashboard' in request.endpoint }}">Dashboard</a>
+                    <a href="{{ url_for('admin.students') }}" class="{{ 'active' if 'student' in request.endpoint and 'dashboard' not in request.endpoint }}">Students</a>
+                    <a href="{{ url_for('admin.alerts') }}" class="{{ 'active' if 'alerts' in request.endpoint }}">Alerts</a>
+                    <a href="{{ url_for('admin.reports') }}" class="{{ 'active' if 'reports' in request.endpoint }}">Reports</a>
+                    <a href="{{ url_for('admin.run_analysis_view') }}" class="{{ 'active' if 'run_analysis' in request.endpoint }}">Run Analysis</a>
+                    <a href="{{ url_for('admin.settings') }}" class="{{ 'active' if 'settings' in request.endpoint }}">Settings</a>
+                {% else %}
+                    <a href="{{ url_for('student.dashboard') }}" class="{{ 'active' if 'dashboard' in request.endpoint }}">Dashboard</a>
+                    <a href="{{ url_for('student.attendance') }}" class="{{ 'active' if 'attendance' in request.endpoint }}">My Attendance</a>
+                    <a href="{{ url_for('student.alerts') }}" class="{{ 'active' if 'alerts' in request.endpoint }}">My Alerts</a>
+                    <a href="{{ url_for('student.recommendations') }}" class="{{ 'active' if 'recommendations' in request.endpoint }}">Recommendations</a>
+                {% endif %}
+                <a href="{{ url_for('auth.logout') }}" class="logout-btn">Logout</a>
+            {% endif %}
+        </div>
+    </nav>
+    
+    <div class="container main-content">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        
+        {% block content %}{% endblock %}
+    </div>
+    
+    {% block scripts %}{% endblock %}
+</body>
+</html>
