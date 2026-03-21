@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="header-section">
+    <h1>My Alerts</h1>
+</div>
+
+<div class="card">
+    {% if alerts %}
+        <ul class="alert-list">
+            {% for alert in alerts %}
+                <li class="alert-item alert-{{ alert.alert_type }}">
+                    {{ alert.message }}
+                    <div class="meta">
+                        <span class="date">{{ alert.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No alerts available.</p>
+    {% endif %}
+</div>
+{% endblock %}

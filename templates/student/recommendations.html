@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="header-section">
+    <h1>Personalized AI Recommendations</h1>
+    <p class="subtitle">Suggestions generated based on your attendance patterns.</p>
+</div>
+
+{% if recommendations %}
+    <div class="reports-list">
+        {% for rec in recommendations %}
+            <div class="card alert-recommendation mb-2">
+                <p>{{ rec.message }}</p>
+                <div class="meta">
+                    <span class="date">Issued on: {{ rec.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="card">
+        <p>You have no current recommendations. Keep up the good work!</p>
+    </div>
+{% endif %}
+{% endblock %}

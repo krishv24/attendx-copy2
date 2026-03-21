@@ -1,0 +1,61 @@
+# Environments
+.env
+.flaskenv
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# API Cache (CrewAI / LiteLLM calls)
+ai_cache.json
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Logs and random terminal output
+pip_out.txt
+*.log
+
+# C-extensions
+*.so
+
+# Packages
+eggs/
+.eggs/
+*.egg-info/
+*.egg
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+.tox/
+.coverage
+.coverage.*
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+
+# Translations
+*.mo
+*.pot
+
+# Django/Flask local DB stuff
+*.sqlite3
+instance/
+
+# Flask session
+.webassets-cache
+
+# IDE / Editor Stuff
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store

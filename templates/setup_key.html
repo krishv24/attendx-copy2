@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="auth-wrapper">
+    <div class="auth-card">
+        <h2>Setup — Enter your Gemini API Key</h2>
+        <p class="subtitle">Please provide your valid Google Gemini API Key. Free at <a href="https://aistudio.google.com/app/apikey" target="_blank">aistudio.google.com</a>.</p>
+        <form method="POST" action="{{ url_for('auth.setup_key') }}">
+            <div class="form-group">
+                <label for="api_key">Gemini API Key</label>
+                <input type="text" id="api_key" name="api_key" value="{{ default_key }}" required placeholder="AIzaSy...">
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Save & Continue</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

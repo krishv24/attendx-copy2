@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="header-section">
+    <h1>My Attendance History</h1>
+</div>
+
+<div class="card">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Subject</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for att in attendances %}
+            <tr>
+                <td>{{ att.date.strftime('%Y-%m-%d') }}</td>
+                <td>{{ att.subject }}</td>
+                <td>
+                    <span class="status-{{ att.status|lower }}">{{ att.status }}</span>
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="3">No records found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

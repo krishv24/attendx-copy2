@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="header-section">
+    <h1>Welcome, {{ student.name }}</h1>
+    <p class="subtitle">Student Dashboard</p>
+</div>
+
+<div class="details-grid">
+    <div class="card">
+        <h3>Your Attendance Overview</h3>
+        <p><strong>Predicted Average:</strong> 
+            <span class="badge badge-{% if student.predicted_attendance >= 85 %}success{% elif student.predicted_attendance >= 75 %}warning{% else %}danger{% endif %}">
+                {{ "%.1f"|format(student.predicted_attendance) }}%
+            </span>
+        </p>
+        <p><strong>Risk Level:</strong> 
+            <span class="badge risk-{{ student.risk_score|lower }}">{{ student.risk_score }}</span>
+        </p>
+    </div>
+</div>
+
+<div class="recent-alerts mt-2">
+    <h2>Recent Alerts</h2>
+    {% if alerts %}
+        <ul class="alert-list">
+            {% for alert in alerts %}
+                <li class="alert-item alert-{{ alert.alert_type }}">
+                    {{ alert.message }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>You have no new alerts.</p>
+    {% endif %}
+</div>
+{% endblock %}

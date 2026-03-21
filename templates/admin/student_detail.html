@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="header-section">
+    <a href="{{ url_for('admin.students') }}" class="back-link">&larr; Back to Students</a>
+    <h1>{{ student.name }}</h1>
+    <p class="subtitle">{{ student.roll_number }} | {{ student.department }}, Semester {{ student.semester }}</p>
+</div>
+
+<div class="details-grid">
+    <div class="card">
+        <h3>Student Information</h3>
+        <p><strong>Email:</strong> {{ student.email }}</p>
+        <p><strong>Predicted Attendance:</strong> {{ "%.1f"|format(student.predicted_attendance) }}%</p>
+        <p><strong>Risk Score:</strong> <span class="badge risk-{{ student.risk_score|lower }}">{{ student.risk_score }}</span></p>
+    </div>
+    
+    <div class="card">
+        <h3>Recent Alerts assigned to Student</h3>
+        {% if alerts %}
+            <ul class="alert-list small">
+                {% for alert in alerts %}
+                    <li class="alert-item alert-{{ alert.alert_type }}">
+                        {{ alert.message }}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No alerts.</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card mt-2">
+    <h3>Attendance History</h3>
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Subject</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for att in attendances %}
+            <tr>
+                <td>{{ att.date.strftime('%Y-%m-%d') }}</td>
+                <td>{{ att.subject }}</td>
+                <td>
+                    <span class="status-{{ att.status|lower }}">{{ att.status }}</span>
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="3">No records found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

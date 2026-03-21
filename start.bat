@@ -1,0 +1,6 @@
+@echo off
+echo Activating virtual environment...
+call .\venv\Scripts\activate.bat
+echo Starting Attendance AI application...
+python run.py
+pause
