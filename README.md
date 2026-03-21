@@ -55,3 +55,18 @@ This is the core "AI Intelligence" module.
 4. Upon authentication, Flask checks their `role` and routes them to either `/admin/dashboard` or `/student/dashboard`.
 5. When the Admin executes an analysis, Flask communicates with `CrewAI`. CrewAI initiates the Python Agents and begins sequentially pulling data out of the MySQL database using backend `tools`. Each Agent passes its output to the next, progressively mutating database records (like bumping risk scores and generating alerts).
 6. When students log in, they query those updated database strings seamlessly.
+
+
+ADMIN:
+admin@school.com
+with admin123!
+
+
+STUDENT:
+Student: alice@school.com
+
+Password: student123 (Alice represents a high-performing student with very few absences.)
+
+Student: bob@school.com
+
+Password: student123 (Bob represents a critical-risk struggling student with massive absences and AI alerts.)
