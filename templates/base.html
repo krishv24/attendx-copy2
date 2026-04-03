@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Attendance System</title>
-    <!-- Modern UI Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+    <meta name="description" content="AI-Powered Student Attendance Management System — Predict, Analyze, and Improve student attendance using intelligent agents.">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     {% block head %}{% endblock %}
 </head>
@@ -45,6 +44,15 @@
         
         {% block content %}{% endblock %}
     </div>
+    
+    <footer class="site-footer">
+        <p>
+            Developed as part of learning at
+            <a href="https://www.pce.ac.in/" target="_blank" rel="noopener noreferrer">Pillai College of Engineering (PCE)</a>
+            <span class="footer-divider">|</span>
+            AI Attendance Management System
+        </p>
+    </footer>
     
     {% block scripts %}{% endblock %}
 </body>
