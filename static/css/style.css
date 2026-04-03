@@ -2,9 +2,9 @@
 
 /* ── Design Tokens ─────────────────────────────────────── */
 :root {
-    --primary-color: #2563eb;
-    --primary-hover: #1d4ed8;
-    --primary-light: #eff6ff;
+    --primary-color: #8a0304;
+    --primary-hover: #6b0203;
+    --primary-light: #fff1f1;
 
     --bg-color: #fafbfc;
     --card-bg: #ffffff;
@@ -362,7 +362,7 @@ table.data-table {
 }
 .btn:hover {
     background-color: var(--primary-hover);
-    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+    box-shadow: 0 2px 8px rgba(138, 3, 4, 0.25);
     color: #ffffff;
 }
 
@@ -436,7 +436,7 @@ table.data-table {
 .form-group input:focus {
     outline: none;
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    box-shadow: 0 0 0 3px rgba(138, 3, 4, 0.1);
 }
 
 .form-group small {
@@ -631,4 +631,9 @@ table.data-table {
     .details-grid {
         grid-template-columns: 1fr;
     }
+}
+
+.brand-accent {
+    color: #8a0304;
+    font-weight: 700;
 }
