@@ -6,7 +6,7 @@ This project is an AI-based Student Attendance Management System built with Pyth
 ## Tech Stack
 * **Backend:** Python, Flask, Flask-SQLAlchemy, Flask-Migrate
 * **Database:** Firebase / MySQL
-* **AI & Machine Learning:** CrewAI, LangChain, Google Gemini API, Pandas
+* **AI & Machine Learning:** CrewAI, Google Gemini API, Pandas
 * **Frontend:** Plain HTML, CSS, Vanilla JavaScript (Jinja2 Templates)
 * **Auth System:** Flask-Login with Role-Based Access (Admin/Student)
 
