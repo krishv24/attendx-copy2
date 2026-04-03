@@ -10,3 +10,5 @@ python-dotenv
 cryptography
 google-generativeai
 firebase-admin
+gunicorn
+fpdf2
