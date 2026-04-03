@@ -11,23 +11,31 @@ def generate_alerts_tool(input: str = "") -> str:
     Do NOT pass data into the input field. Queries the DB directly.
     """
     try:
-        students = Student.query.filter(Student.predicted_attendance < 75.0).all()
+        from app.extensions import db
+        import uuid
+        from datetime import datetime
+        
+        students_query = db.collection('students').where('predicted_attendance', '<', 75.0).get()
         count = 0
-        for s in students:
-            existing = Alert.query.filter_by(student_id=s.id, alert_type='risk', is_read=False).first()
+        for s_doc in students_query:
+            s = s_doc.to_dict()
+            s_id = s.get('id')
+            
+            existing = db.collection('alerts').where('student_id', '==', str(s_id)).where('alert_type', '==', 'risk').where('is_read', '==', False).limit(1).get()
             if not existing:
-                alert = Alert(
-                    student_id=s.id,
-                    message=f"Warning: predicted attendance is {s.predicted_attendance:.1f}% ({s.risk_score} risk)",
-                    alert_type='risk'
-                )
-                db.session.add(alert)
+                alert_id = str(uuid.uuid4())
+                db.collection('alerts').document(alert_id).set({
+                    'id': alert_id,
+                    'student_id': str(s_id),
+                    'message': f"Warning: predicted attendance is {s.get('predicted_attendance'):.1f}% ({s.get('risk_score')} risk)",
+                    'alert_type': 'risk',
+                    'is_read': False,
+                    'created_at': datetime.utcnow().isoformat()
+                })
                 count += 1
                 
-        db.session.commit()
         return f"Created {count} new risk alerts."
     except Exception as e:
-        db.session.rollback()
         return f"Error creating alerts: {str(e)}"
 
 def create_agent(llm):

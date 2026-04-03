@@ -12,39 +12,48 @@ def provide_recommendations_tool(input: str = "") -> str:
     Do NOT pass data in input. Keep it empty.
     """
     try:
+        from app.extensions import db
         from app.ai_cache import get_cached_ai_response
-        from app.models import Config
         import os
         import json
-        config_key = Config.query.filter_by(key='gemini_api_key_2').first()
-        api_key = config_key.value if config_key else os.environ.get('GEMINI_API_KEY_2')
+        import uuid
+        from datetime import datetime
+        
+        config_doc = db.collection('configs').document('gemini_api_key_2').get()
+        api_key = config_doc.to_dict().get('value') if config_doc.exists else os.environ.get('GEMINI_API_KEY_2')
         if not api_key:
             api_key = os.environ.get('GEMINI_API_KEY')
         
         count = 0
-        students = Student.query.filter(Student.risk_score.in_(['Medium', 'High', 'Critical'])).all()
+        students_query = db.collection('students').where('risk_score', 'in', ['Medium', 'High', 'Critical']).get()
         
-        if students and api_key:
-            student_data = [{"id": s.id, "name": s.name, "risk": s.risk_score, "rate": round(s.predicted_attendance,1)} for s in students]
-            prompt = f"Write a brief 1-sentence personalized encouraging recommendation for each of these at-risk students. Suggest mentoring, counselor referral, or extra classes based on risk. Data: {json.dumps(student_data)}. Return ONLY valid JSON: {{\"recommendations\": [{{\"id\": 1, \"text\": \"...\"}}]}}"
+        if students_query and api_key:
+            student_data = [{"id": s.to_dict().get('id'), "name": s.to_dict().get('name'), "risk": s.to_dict().get('risk_score'), "rate": round(s.to_dict().get('predicted_attendance',0),1)} for s in students_query]
+            prompt = f"Write a brief 1-sentence personalized encouraging recommendation for each of these at-risk students. Suggest mentoring, counselor referral, or extra classes based on risk. Data: {json.dumps(student_data)}. Return ONLY valid JSON: {{\"recommendations\": [{{\"id\": \"1\", \"text\": \"...\"}}]}}"
             
             try:
                 res_text = get_cached_ai_response(prompt, api_key=api_key)
                 json_str = res_text[res_text.find('{'):res_text.rfind('}')+1]
-                rec_map = {item['id']: item['text'] for item in json.loads(json_str).get('recommendations', [])}
+                rec_map = {str(item['id']): item['text'] for item in json.loads(json_str).get('recommendations', [])}
                 
-                for s in students:
-                    if s.id in rec_map:
-                        alert = Alert(student_id=s.id, message=rec_map[s.id], alert_type='recommendation')
-                        db.session.add(alert)
+                for s_doc in students_query:
+                    s_id = str(s_doc.to_dict().get('id'))
+                    if s_id in rec_map:
+                        alert_id = str(uuid.uuid4())
+                        db.collection('alerts').document(alert_id).set({
+                            'id': alert_id,
+                            'student_id': s_id,
+                            'message': rec_map[s_id],
+                            'alert_type': 'recommendation',
+                            'is_read': False,
+                            'created_at': datetime.utcnow().isoformat()
+                        })
                         count += 1
             except Exception as e:
                 pass
                 
-        db.session.commit()
         return f"Generated {count} personalized recommendations."
     except Exception as e:
-        db.session.rollback()
         return f"DB Error recommendations: {str(e)}"
 
 def create_agent(llm):

@@ -11,19 +11,25 @@ def generate_report_tool(input: str = "") -> str:
     Queries the database directly. Do NOT pass data to input.
     """
     try:
-        students = Student.query.all()
-        alerts = Alert.query.all()
+        from app.extensions import db
+        import uuid
+        from datetime import datetime
         
-        low = sum(1 for s in students if s.risk_score == 'Low')
-        med = sum(1 for s in students if s.risk_score == 'Medium')
-        high = sum(1 for s in students if s.risk_score == 'High')
-        crit = sum(1 for s in students if s.risk_score == 'Critical')
+        students_query = db.collection('students').get()
+        alerts_query = db.collection('alerts').get()
+        
+        students = [s.to_dict() for s in students_query]
+        alerts = [a.to_dict() for a in alerts_query]
+        
+        low = sum(1 for s in students if s.get('risk_score') == 'Low')
+        med = sum(1 for s in students if s.get('risk_score') == 'Medium')
+        high = sum(1 for s in students if s.get('risk_score') == 'High')
+        crit = sum(1 for s in students if s.get('risk_score') == 'Critical')
         
         from app.ai_cache import get_cached_ai_response
-        from app.models import Config
         import os
-        config_key = Config.query.filter_by(key='gemini_api_key').first()
-        api_key = config_key.value if config_key else os.environ.get('GEMINI_API_KEY')
+        config_doc = db.collection('configs').document('gemini_api_key').get()
+        api_key = config_doc.to_dict().get('value') if config_doc.exists else os.environ.get('GEMINI_API_KEY')
         if not api_key:
             return "No Gemini API key available."
         os.environ['GEMINI_API_KEY'] = api_key
@@ -35,9 +41,9 @@ def generate_report_tool(input: str = "") -> str:
             "Top At-Risk: "
         )
         
-        at_risk = sorted([s for s in students if s.risk_score in ['High', 'Critical']], key=lambda x: x.predicted_attendance)
+        at_risk = sorted([s for s in students if s.get('risk_score') in ['High', 'Critical']], key=lambda x: x.get('predicted_attendance', 0))
         for i, s in enumerate(at_risk[:10]):
-            stats_summary += f"{s.name} ({s.predicted_attendance:.1f}% risk: {s.risk_score}), "
+            stats_summary += f"{s.get('name')} ({s.get('predicted_attendance',0):.1f}% risk: {s.get('risk_score')}), "
             
         prompt = f"Write a comprehensive, professional executive summary (about 150 words) on student attendance and at risk models based on this data: {stats_summary}. Use descriptive paragraphs, not exact code formatting, but retain key numbers. Sign off as 'AI Attendance System'."
         
@@ -46,13 +52,16 @@ def generate_report_tool(input: str = "") -> str:
         except Exception as e:
             report_content = "Failed to generate AI report: " + str(e)
             
-        report = Report(title="Comprehensive AI Attendance Report", content=report_content)
-        db.session.add(report)
-        db.session.commit()
+        report_id = str(uuid.uuid4())
+        db.collection('reports').document(report_id).set({
+            'id': report_id,
+            'title': "Comprehensive AI Attendance Report",
+            'content': report_content,
+            'generated_at': datetime.utcnow().isoformat()
+        })
         
         return "Report generated and saved to database successfully."
     except Exception as e:
-        db.session.rollback()
         return f"Error creating report: {str(e)}"
 
 def create_agent(llm):

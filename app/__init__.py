@@ -7,9 +7,7 @@ def create_app(config_class=Config):
     app = Flask(__name__, template_folder='../templates', static_folder='../static')
     app.config.from_object(config_class)
 
-    from app.extensions import db, migrate, login_manager
-    db.init_app(app)
-    migrate.init_app(app, db)
+    from app.extensions import db, login_manager
     login_manager.init_app(app)
 
     # Register blueprints
@@ -24,7 +22,10 @@ def create_app(config_class=Config):
     @login_manager.user_loader
     def load_user(user_id):
         from app.models import User
-        return User.query.get(int(user_id))
+        user_doc = db.collection('users').document(str(user_id)).get()
+        if user_doc.exists:
+            return User.from_dict(user_doc.to_dict())
+        return None
 
     # Redirect to setup if API key is missing
     @app.before_request
@@ -33,9 +34,8 @@ def create_app(config_class=Config):
             return
             
         try:
-            from app.models import Config as DBConfig
-            api_key = DBConfig.query.filter_by(key='gemini_api_key').first()
-            if not api_key or not api_key.value:
+            api_key = db.collection('configs').document('gemini_api_key').get()
+            if not api_key.exists or not api_key.to_dict().get('value'):
                 return redirect(url_for('auth.setup_key'))
         except Exception:
             pass # DB not init yet

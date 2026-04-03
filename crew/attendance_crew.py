@@ -1,15 +1,16 @@
 # crew/attendance_crew.py - Orchestrates the CrewAI process
 from crewai import Crew, Process, Task, LLM
-from app.models import Config
+from app.extensions import db
 import os
 import time
 
 def run_attendance_analysis():
     # Attempt to grab API key from DB or environment (Gemini)
-    config_key = Config.query.filter_by(key='gemini_api_key').first()
-    api_key1 = config_key.value if config_key else os.environ.get('GEMINI_API_KEY')
-    config_key2 = Config.query.filter_by(key='gemini_api_key_2').first()
-    api_key2 = config_key2.value if config_key2 else (os.environ.get('GEMINI_API_KEY_2') or api_key1)
+    config_doc1 = db.collection('configs').document('gemini_api_key').get()
+    api_key1 = config_doc1.to_dict().get('value') if config_doc1.exists else os.environ.get('GEMINI_API_KEY')
+    
+    config_doc2 = db.collection('configs').document('gemini_api_key_2').get()
+    api_key2 = config_doc2.to_dict().get('value') if config_doc2.exists else (os.environ.get('GEMINI_API_KEY_2') or api_key1)
     
     if not api_key1:
         raise ValueError("No Gemini API key found. Please set it in Settings or .env.")

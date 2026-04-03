@@ -11,40 +11,38 @@ def assign_risk_scores_tool(input: str = "") -> str:
     Do NOT pass JSON into the input argument. Keep it empty.
     """
     try:
+        from app.extensions import db
         from app.ai_cache import get_cached_ai_response
-        from app.models import Config
         import os
         import json
-        config_key = Config.query.filter_by(key='gemini_api_key_2').first()
-        api_key = config_key.value if config_key else os.environ.get('GEMINI_API_KEY_2')
+        
+        config_doc = db.collection('configs').document('gemini_api_key_2').get()
+        api_key = config_doc.to_dict().get('value') if config_doc.exists else os.environ.get('GEMINI_API_KEY_2')
         if not api_key:
-            # fallback to key 1
             api_key = os.environ.get('GEMINI_API_KEY')
         
-        students = Student.query.all()
+        students = db.collection('students').get()
         results = []
         
         if students and api_key:
-            student_data = [{"id": s.id, "rate": round(s.predicted_attendance, 1)} for s in students]
-            prompt = f"Assign risk scores for these students based on typical academic attendance standards. Below 65 is Critical, 65-74 is High, 75-84 is Medium, 85+ is Low. Data: {json.dumps(student_data)}. Respond ONLY with valid JSON mapping student id to 'Low', 'Medium', 'High', or 'Critical': {{\"results\": [{{\"id\": 1, \"score\": \"Low\"}}]}}"
+            student_data = [{"id": s.to_dict().get('id'), "rate": round(s.to_dict().get('predicted_attendance', 0), 1)} for s in students]
+            prompt = f"Assign risk scores for these students based on typical academic attendance standards. Below 65 is Critical, 65-74 is High, 75-84 is Medium, 85+ is Low. Data: {json.dumps(student_data)}. Respond ONLY with valid JSON mapping student id to 'Low', 'Medium', 'High', or 'Critical': {{\"results\": [{{\"id\": \"1\", \"score\": \"Low\"}}]}}"
             
             try:
                 res_text = get_cached_ai_response(prompt, api_key=api_key)
-                # simple parsing attempt
-                import re
                 json_str = res_text[res_text.find('{'):res_text.rfind('}')+1]
-                scores_map = {item['id']: item['score'] for item in json.loads(json_str).get('results', [])}
+                scores_map = {str(item['id']): item['score'] for item in json.loads(json_str).get('results', [])}
             except Exception as e:
                 scores_map = {}
                 
             for s in students:
-                s.risk_score = scores_map.get(s.id, 'Medium')
-                results.append(f"Student {s.id}: Risk {s.risk_score}")
+                s_id = s.to_dict().get('id')
+                new_score = scores_map.get(str(s_id), 'Medium')
+                db.collection('students').document(str(s_id)).update({'risk_score': new_score})
+                results.append(f"Student {s_id}: Risk {new_score}")
             
-        db.session.commit()
         return "\n".join(results)
     except Exception as e:
-        db.session.rollback()
         return f"Error updating risks: {str(e)}"
 
 def create_agent(llm):
