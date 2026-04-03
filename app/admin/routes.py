@@ -94,33 +94,112 @@ def student_pdf(id):
     
     pdf = FPDF()
     pdf.add_page()
-    pdf.set_font("helvetica", "B", 16)
-    pdf.cell(0, 10, "Student Attendance & Report", new_x="LMARGIN", new_y="NEXT", align="C")
+    
+    # Custom Brand Colors
+    BRAND_R, BRAND_G, BRAND_B = 37, 99, 235  # Primary blue
+    TEXT_R, TEXT_G, TEXT_B = 30, 41, 59      # Main text
+    MUTED_R, MUTED_G, MUTED_B = 100, 116, 139 # Muted text
+    
+    # Header
+    pdf.set_font("helvetica", "B", 24)
+    pdf.set_text_color(BRAND_R, BRAND_G, BRAND_B)
+    pdf.cell(0, 15, "AI Attendance Report", new_x="LMARGIN", new_y="NEXT", align="C")
+    
+    pdf.set_font("helvetica", "I", 10)
+    pdf.set_text_color(MUTED_R, MUTED_G, MUTED_B)
+    pdf.cell(0, 5, f"Generated on {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", new_x="LMARGIN", new_y="NEXT", align="C")
+    
+    pdf.ln(10)
+    
+    # Divider Log
+    pdf.set_draw_color(226, 232, 240)
+    pdf.line(10, pdf.get_y(), 200, pdf.get_y())
+    pdf.ln(5)
+    
+    # Student Info Box
+    pdf.set_font("helvetica", "B", 14)
+    pdf.set_text_color(TEXT_R, TEXT_G, TEXT_B)
+    pdf.cell(0, 10, "Student Profile", new_x="LMARGIN", new_y="NEXT")
     
     pdf.set_font("helvetica", "", 12)
-    pdf.cell(0, 10, f"Name: {student.name}", new_x="LMARGIN", new_y="NEXT")
-    pdf.cell(0, 10, f"Roll Number: {student.roll_number}", new_x="LMARGIN", new_y="NEXT")
-    pdf.cell(0, 10, f"Risk Score: {student.risk_score}", new_x="LMARGIN", new_y="NEXT")
-    pdf.cell(0, 10, f"Predicted Attendance: {student.predicted_attendance:.1f}%", new_x="LMARGIN", new_y="NEXT")
+    pdf.cell(50, 8, "Name:")
+    pdf.set_font("helvetica", "B", 12)
+    pdf.cell(0, 8, str(student.name), new_x="LMARGIN", new_y="NEXT")
     
+    pdf.set_font("helvetica", "", 12)
+    pdf.cell(50, 8, "Roll Number:")
+    pdf.set_font("helvetica", "B", 12)
+    pdf.cell(0, 8, str(student.roll_number), new_x="LMARGIN", new_y="NEXT")
+    
+    pdf.set_font("helvetica", "", 12)
+    pdf.cell(50, 8, "Predicted Attendance:")
+    pdf.set_font("helvetica", "B", 12)
+    pdf.cell(0, 8, f"{student.predicted_attendance:.1f}%", new_x="LMARGIN", new_y="NEXT")
+    
+    pdf.set_font("helvetica", "", 12)
+    pdf.cell(50, 8, "Risk Level:")
+    pdf.set_font("helvetica", "B", 12)
+    if student.risk_score.lower() in ['high', 'critical']:
+        pdf.set_text_color(220, 38, 38)
+    elif student.risk_score.lower() == 'medium':
+        pdf.set_text_color(217, 119, 6)
+    else:
+        pdf.set_text_color(22, 163, 74)
+    pdf.cell(0, 8, str(student.risk_score), new_x="LMARGIN", new_y="NEXT")
+    
+    pdf.set_text_color(TEXT_R, TEXT_G, TEXT_B)
+    
+    # Divider
     pdf.ln(5)
+    pdf.set_draw_color(226, 232, 240)
+    pdf.line(10, pdf.get_y(), 200, pdf.get_y())
+    pdf.ln(5)
+    
+    # Recommendations
     pdf.set_font("helvetica", "B", 14)
-    pdf.cell(0, 10, "Recommendations", new_x="LMARGIN", new_y="NEXT")
+    pdf.cell(0, 10, "AI Recommendations", new_x="LMARGIN", new_y="NEXT")
     pdf.set_font("helvetica", "", 11)
     if recs:
         for r in recs:
-            pdf.multi_cell(0, 8, f"- {r.message}")
+            pdf.multi_cell(0, 8, f"• {r.message}")
     else:
-        pdf.cell(0, 10, "No active recommendations.", new_x="LMARGIN", new_y="NEXT")
+        pdf.set_font("helvetica", "I", 11)
+        pdf.set_text_color(MUTED_R, MUTED_G, MUTED_B)
+        pdf.cell(0, 10, "No active recommendations available.", new_x="LMARGIN", new_y="NEXT")
         
+    # Divider
+    pdf.set_text_color(TEXT_R, TEXT_G, TEXT_B)
     pdf.ln(5)
+    pdf.set_draw_color(226, 232, 240)
+    pdf.line(10, pdf.get_y(), 200, pdf.get_y())
+    pdf.ln(5)
+    
+    # Recent Attendance Table
     pdf.set_font("helvetica", "B", 14)
-    pdf.cell(0, 10, "Recent Attendance", new_x="LMARGIN", new_y="NEXT")
+    pdf.cell(0, 10, "Recent Attendance Log", new_x="LMARGIN", new_y="NEXT")
+    
+    # Table Header
+    pdf.set_fill_color(241, 245, 249)
+    pdf.set_font("helvetica", "B", 12)
+    pdf.cell(50, 10, "Date", border=1, fill=True)
+    pdf.cell(90, 10, "Subject", border=1, fill=True)
+    pdf.cell(0, 10, "Status", border=1, fill=True, new_x="LMARGIN", new_y="NEXT")
+    
     pdf.set_font("helvetica", "", 11)
     for a in attendances[:10]:
         date_str = a.date.strftime("%Y-%m-%d") if hasattr(a.date, 'strftime') else str(a.date)
-        pdf.cell(0, 8, f"{date_str} - {a.subject}: {a.status}", new_x="LMARGIN", new_y="NEXT")
-    
+        pdf.cell(50, 10, date_str, border=1)
+        pdf.cell(90, 10, str(a.subject), border=1)
+        
+        status_text = str(a.status)
+        if status_text.lower() == 'present':
+            pdf.set_text_color(22, 163, 74)
+        else:
+            pdf.set_text_color(220, 38, 38)
+            
+        pdf.cell(0, 10, status_text, border=1, new_x="LMARGIN", new_y="NEXT")
+        pdf.set_text_color(TEXT_R, TEXT_G, TEXT_B)
+        
     pdf_bytes = bytes(pdf.output())
     buffer = BytesIO(pdf_bytes)
     return send_file(buffer, as_attachment=True, download_name=f"{student.roll_number}_report.pdf", mimetype='application/pdf')
