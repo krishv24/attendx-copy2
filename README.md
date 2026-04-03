@@ -100,18 +100,16 @@ Navigate to `http://127.0.0.1:5000` in your browser.
 
 # Process Flow Diagram
 ```mermaid
-graph TD
-    %% Define Styles
-    classDef database fill:#f9f9f9,stroke:#333,stroke-width:2px;
-    classDef backend fill:#e1f5fe,stroke:#0277bd,stroke-width:2px;
-    classDef ai fill:#ede7f6,stroke:#512da8,stroke-width:2px;
-    classDef frontend fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px;
+graph LR
+    classDef database fill:#f9f9f9,stroke:#333,stroke-width:2px
+    classDef backend fill:#e1f5fe,stroke:#0277bd,stroke-width:2px
+    classDef ai fill:#ede7f6,stroke:#512da8,stroke-width:2px
+    classDef frontend fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
 
-    %% Components
     DB[(Firebase Firestore\nNoSQL Database)]:::database
     Flask[Flask Backend\nApp Logic & API]:::backend
-    
-    subgraph "CrewAI Orchestrator Pipeline (Google Gemini)"
+
+    subgraph CrewAI Orchestrator Pipeline
         A1[1. Data Ingestion]:::ai
         A2[2. Pattern Detect]:::ai
         A3[3. ML Prediction]:::ai
@@ -120,18 +118,17 @@ graph TD
         A6[6. NLP Recommender]:::ai
         A7[7. Anomaly]:::ai
         A8[8. Report Gen]:::ai
-        
+
         A1 --> A2 --> A3 --> A4 --> A5 --> A6 --> A7 --> A8
     end
 
-    AdminUI((Admin \nDashboard)):::frontend
-    StudentUI((Student \nDashboard)):::frontend
+    AdminUI((Admin Dashboard)):::frontend
+    StudentUI((Student Dashboard)):::frontend
 
-    %% Connections
     DB <--> Flask
     Flask --> A1
     A8 --> Flask
-    
+
     Flask --> AdminUI
     Flask --> StudentUI
 ```
