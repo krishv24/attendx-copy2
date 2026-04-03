@@ -99,6 +99,7 @@ Navigate to `http://127.0.0.1:5000` in your browser.
 
 
 # Process Flow Diagram
+```mermaid
 graph TD
     %% Define Styles
     classDef database fill:#f9f9f9,stroke:#333,stroke-width:2px;
@@ -128,8 +129,9 @@ graph TD
 
     %% Connections
     DB <--> Flask
-    Flask -- "Starts Analysis" --> A1
-    A8 -- "Updates Records" --> Flask
+    Flask --> A1
+    A8 --> Flask
     
     Flask --> AdminUI
     Flask --> StudentUI
+```
