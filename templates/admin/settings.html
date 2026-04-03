@@ -9,7 +9,7 @@
     <form method="POST" action="{{ url_for('admin.settings') }}">
         <div class="form-group">
             <label for="api_key">Gemini API Key</label>
-            <input type="text" id="api_key" name="api_key" value="{{ current_key }}" required>
+            <input type="password" id="api_key" name="api_key" value="{{ current_key }}" required>
             <small>This key is used by the CrewAI agents to generate predictions, risks, and recommendations.</small>
         </div>
         <button type="submit" class="btn btn-primary">Update API Key</button>

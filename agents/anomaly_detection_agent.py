@@ -12,20 +12,25 @@ def detect_anomalies_tool(input: str = "") -> str:
     Do NOT pass data into the input. Queries the DB directly.
     """
     try:
-        attendances = Attendance.query.all()
+        from app.extensions import db
+        import uuid
+        from datetime import datetime
+        attendances = db.collection('attendances').get()
         if not attendances:
             return "No data for anomalies."
             
-        data = [{'student_id': a.student_id, 'date': a.date, 'status': a.status} for a in attendances]
+        data = []
+        for a in attendances:
+            d = a.to_dict()
+            data.append({'student_id': d.get('student_id'), 'date': d.get('date'), 'status': d.get('status')})
         df = pd.DataFrame(data)
         df['date'] = pd.to_datetime(df['date'])
         
         from app.ai_cache import get_cached_ai_response
-        from app.models import Config
         import os
         import json
-        config_key = Config.query.filter_by(key='gemini_api_key').first()
-        api_key = config_key.value if config_key else os.environ.get('GEMINI_API_KEY')
+        config_doc = db.collection('configs').document('gemini_api_key').get()
+        api_key = config_doc.to_dict().get('value') if config_doc.exists else os.environ.get('GEMINI_API_KEY')
         if not api_key:
             return "No Gemini API key available."
         os.environ['GEMINI_API_KEY'] = api_key
@@ -61,13 +66,18 @@ def detect_anomalies_tool(input: str = "") -> str:
             
             absent_that_day = df[(df['date'] == row['date']) & (df['status'] == 'Absent')]
             for sid in absent_that_day['student_id'].unique():
-                alert = Alert(student_id=int(sid), message=f"Anomaly: High class absence on {date_str}.", alert_type='anomaly')
-                db.session.add(alert)
+                alert_id = str(uuid.uuid4())
+                db.collection('alerts').document(alert_id).set({
+                    'id': alert_id,
+                    'student_id': str(sid),
+                    'message': f"Anomaly: High class absence on {date_str}.",
+                    'alert_type': 'anomaly',
+                    'is_read': False,
+                    'created_at': datetime.utcnow().isoformat()
+                })
                 
-        db.session.commit()
         return f"Detected {len(high_absent_days)} anomaly days. " + " | ".join(results)
     except Exception as e:
-        db.session.rollback()
         return f"Error storing anomalies: {str(e)}"
 
 def create_agent(llm):

@@ -12,20 +12,28 @@ def predict_attendance_tool(input: str = "") -> str:
     Do NOT pass JSON or data into the input field. Keep the input empty.
     """
     try:
-        attendances = Attendance.query.all()
-        students = Student.query.all()
+        from app.extensions import db
+        attendances = db.collection('attendances').get()
+        students = db.collection('students').get()
         if not attendances or not students:
             return "Not enough data for prediction."
             
-        data = [{'student_id': a.student_id, 'date': a.date, 'status': a.status} for a in attendances]
+        data = []
+        for a in attendances:
+            d = a.to_dict()
+            data.append({'student_id': d.get('student_id'), 'date': d.get('date'), 'status': d.get('status')})
+            
         df = pd.DataFrame(data)
+        df['date'] = pd.to_datetime(df['date'])
         
         from sklearn.linear_model import LinearRegression
         import numpy as np
         
         results = []
         for s in students:
-            s_data = df[df['student_id'] == s.id].copy()
+            s_dict = s.to_dict()
+            s_id = s_dict.get('id')
+            s_data = df[df['student_id'] == s_id].copy()
             if s_data.empty:
                 continue
                 
@@ -34,8 +42,8 @@ def predict_attendance_tool(input: str = "") -> str:
             
             if len(s_data) < 3:
                 rate = s_data['is_present'].mean() * 100
-                s.predicted_attendance = float(rate)
-                results.append({"student_id": s.id, "predicted_attendance": float(rate)})
+                db.collection('students').document(s_id).update({'predicted_attendance': float(rate)})
+                results.append({"student_id": s_id, "predicted_attendance": float(rate)})
                 continue
                 
             X = s_data[['day_index']].values
@@ -51,13 +59,11 @@ def predict_attendance_tool(input: str = "") -> str:
             predictions = np.clip(predictions, 0, 1)
             rate = float(predictions.mean() * 100)
             
-            s.predicted_attendance = rate
-            results.append({"student_id": s.id, "predicted_attendance": rate})
+            db.collection('students').document(s_id).update({'predicted_attendance': rate})
+            results.append({"student_id": s_id, "predicted_attendance": rate})
             
-        db.session.commit()
         return f"Predictions updated successfully for {len(results)} students."
     except Exception as e:
-        db.session.rollback()
         return f"Database error during prediction: {str(e)}"
 
 def create_agent(llm):

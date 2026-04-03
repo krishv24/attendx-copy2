@@ -13,11 +13,15 @@ def fetch_attendance_data_tool(input: str = "") -> str:
     Returns computed attendance percentages per student.
     """
     try:
-        attendances = Attendance.query.all()
+        from app.extensions import db
+        attendances = db.collection('attendances').get()
         if not attendances:
             return json.dumps({"error": "No attendance records found."})
         
-        data = [{'student_id': a.student_id, 'subject': a.subject, 'date': a.date, 'status': a.status} for a in attendances]
+        data = []
+        for a in attendances:
+            d = a.to_dict()
+            data.append({'student_id': d.get('student_id'), 'subject': d.get('subject'), 'date': d.get('date'), 'status': d.get('status')})
         df = pd.DataFrame(data)
         df['date'] = pd.to_datetime(df['date'])
         

@@ -59,3 +59,4 @@ instance/
 *.swo
 *~
 .DS_Store
+firebase-credentials.json

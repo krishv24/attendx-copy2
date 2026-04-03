@@ -3,6 +3,7 @@ from flask import render_template, redirect, url_for, flash
 from flask_login import login_required, current_user
 from app.student import student
 from app.models import Student, Attendance, Alert, Report
+from app.extensions import db
 from functools import wraps
 
 def student_required(f):
@@ -18,13 +19,22 @@ def student_required(f):
 @login_required
 @student_required
 def dashboard():
-    student_record = Student.query.get(current_user.student_id)
-    if not student_record:
+    student_doc = db.collection('students').document(str(current_user.student_id)).get()
+    if not student_doc.exists:
         flash('Student record not found.', 'danger')
         return redirect(url_for('auth.login'))
         
-    recent_attendances = Attendance.query.filter_by(student_id=student_record.id).order_by(Attendance.date.desc()).limit(5).all()
-    recent_alerts = Alert.query.filter_by(student_id=student_record.id).filter(Alert.alert_type != 'recommendation').order_by(Alert.created_at.desc()).limit(5).all()
+    student_record = Student.from_dict(student_doc.to_dict())
+    
+    # Needs sorting and limit, Firestore syntax:
+    attendance_query = db.collection('attendances').where('student_id', '==', str(student_record.id)).order_by('date', direction='DESCENDING').limit(5).get()
+    recent_attendances = [Attendance.from_dict(doc.to_dict()) for doc in attendance_query]
+    
+    # Fetch all, sort and filter in python to avoid complex index requirements on free tier:
+    alerts_all = db.collection('alerts').where('student_id', '==', str(student_record.id)).get()
+    alerts_list = [Alert.from_dict(doc.to_dict()) for doc in alerts_all if doc.to_dict().get('alert_type') != 'recommendation']
+    alerts_list.sort(key=lambda x: x.created_at, reverse=True)
+    recent_alerts = alerts_list[:5]
     
     return render_template('student/dashboard.html', 
                            student=student_record,
@@ -35,22 +45,36 @@ def dashboard():
 @login_required
 @student_required
 def attendance():
-    student_record = Student.query.get(current_user.student_id)
-    attendances = Attendance.query.filter_by(student_id=student_record.id).order_by(Attendance.date.desc()).all()
+    doc = db.collection('students').document(str(current_user.student_id)).get()
+    student_record = Student.from_dict(doc.to_dict())
+    
+    attendance_query = db.collection('attendances').where('student_id', '==', str(student_record.id)).order_by('date', direction='DESCENDING').get()
+    attendances = [Attendance.from_dict(doc.to_dict()) for doc in attendance_query]
+    
     return render_template('student/attendance.html', student=student_record, attendances=attendances)
 
 @student.route('/alerts')
 @login_required
 @student_required
 def alerts():
-    student_record = Student.query.get(current_user.student_id)
-    all_alerts = Alert.query.filter_by(student_id=student_record.id).filter(Alert.alert_type != 'recommendation').order_by(Alert.created_at.desc()).all()
+    doc = db.collection('students').document(str(current_user.student_id)).get()
+    student_record = Student.from_dict(doc.to_dict())
+    
+    alerts_all = db.collection('alerts').where('student_id', '==', str(student_record.id)).get()
+    all_alerts = [Alert.from_dict(doc.to_dict()) for doc in alerts_all if doc.to_dict().get('alert_type') != 'recommendation']
+    all_alerts.sort(key=lambda x: x.created_at, reverse=True)
+    
     return render_template('student/alerts.html', alerts=all_alerts)
 
 @student.route('/recommendations')
 @login_required
 @student_required
 def recommendations():
-    student_record = Student.query.get(current_user.student_id)
-    all_recs = Alert.query.filter_by(student_id=student_record.id, alert_type='recommendation').order_by(Alert.created_at.desc()).all()
+    doc = db.collection('students').document(str(current_user.student_id)).get()
+    student_record = Student.from_dict(doc.to_dict())
+    
+    recs_all = db.collection('alerts').where('student_id', '==', str(student_record.id)).where('alert_type', '==', 'recommendation').get()
+    all_recs = [Alert.from_dict(doc.to_dict()) for doc in recs_all]
+    all_recs.sort(key=lambda x: x.created_at, reverse=True)
+    
     return render_template('student/recommendations.html', recommendations=all_recs)

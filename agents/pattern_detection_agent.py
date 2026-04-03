@@ -13,21 +13,24 @@ def detect_patterns_tool(input: str = "") -> str:
     Finds students with repeated absences and specific trends using recent data.
     """
     try:
-        attendances = Attendance.query.all()
+        from app.extensions import db
+        attendances = db.collection('attendances').get()
         if not attendances:
             return json.dumps({"error": "No data for pattern detection."})
             
-        data = [{'student_id': a.student_id, 'subject': a.subject, 'date': a.date, 'status': a.status} for a in attendances]
+        data = []
+        for a in attendances:
+            d = a.to_dict()
+            data.append({'student_id': d.get('student_id'), 'subject': d.get('subject'), 'date': d.get('date'), 'status': d.get('status')})
         df = pd.DataFrame(data)
         df['date'] = pd.to_datetime(df['date'])
         df = df.sort_values(by='date', ascending=False)
         
         from app.ai_cache import get_cached_ai_response
-        from app.models import Config
         import os
         import json
-        config_key = Config.query.filter_by(key='gemini_api_key_2').first()
-        api_key = config_key.value if config_key else os.environ.get('GEMINI_API_KEY_2')
+        config_doc = db.collection('configs').document('gemini_api_key_2').get()
+        api_key = config_doc.to_dict().get('value') if config_doc.exists else os.environ.get('GEMINI_API_KEY_2')
         if not api_key:
             api_key = os.environ.get('GEMINI_API_KEY')
             
