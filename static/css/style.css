@@ -100,11 +100,18 @@ a:hover {
 }
 
 .nav-brand {
-    font-size: 1.15rem;
-    font-weight: 600;
+    font-size: 1.5rem;
+    font-weight: 700;
     color: var(--text-main);
     letter-spacing: 0.04em;
     text-transform: uppercase;
+    text-decoration: none;
+    transition: transform var(--transition);
+}
+
+.nav-brand:hover {
+    color: var(--text-main);
+    transform: scale(1.02);
 }
 
 .nav-links {

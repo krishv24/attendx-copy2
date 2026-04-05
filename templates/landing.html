@@ -392,8 +392,17 @@
                 Attend<span class="logo-accent">X</span>
             </a>
             <div class="nav-links">
-                <a href="{{ url_for('auth.login') }}" class="btn-outline">Log in</a>
-                <a href="{{ url_for('auth.register') }}" class="btn-primary">Register</a>
+                {% if current_user.is_authenticated %}
+                    {% if current_user.role == 'admin' %}
+                        <a href="{{ url_for('admin.dashboard') }}" class="btn-outline">Dashboard</a>
+                    {% else %}
+                        <a href="{{ url_for('student.dashboard') }}" class="btn-outline">Dashboard</a>
+                    {% endif %}
+                    <a href="{{ url_for('auth.logout') }}" class="btn-primary">Logout</a>
+                {% else %}
+                    <a href="{{ url_for('auth.login') }}" class="btn-outline">Log in</a>
+                    <a href="{{ url_for('auth.register') }}" class="btn-primary">Register</a>
+                {% endif %}
             </div>
         </div>
     </header>
@@ -403,7 +412,15 @@
         <h1>Smarter attendance management, powered by AI agents.</h1>
         <p>Log attendance, track risks in real-time, and let AI handle predictive modeling and alerts — so no student falls through the cracks.</p>
         <div class="hero-actions">
-            <a href="{{ url_for('auth.register') }}" class="btn-primary btn-hero">Get Started</a>
+            {% if current_user.is_authenticated %}
+                {% if current_user.role == 'admin' %}
+                    <a href="{{ url_for('admin.dashboard') }}" class="btn-primary btn-hero">Go to Dashboard</a>
+                {% else %}
+                    <a href="{{ url_for('student.dashboard') }}" class="btn-primary btn-hero">Go to Dashboard</a>
+                {% endif %}
+            {% else %}
+                <a href="{{ url_for('auth.register') }}" class="btn-primary btn-hero">Get Started</a>
+            {% endif %}
             <a href="#features" class="btn-outline btn-hero">Explore Features</a>
         </div>
     </section>
