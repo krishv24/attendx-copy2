@@ -59,7 +59,7 @@ This is the core "AI Intelligence" module.
 
 ADMIN:
 admin@school.com
-with admin123!
+with admin123
 
 
 STUDENT:
