@@ -13,7 +13,7 @@
 
 <body>
     <nav class="navbar">
-        <div class="nav-brand">Attend<span class="brand-accent">X</span></div>
+        <a href="/" class="nav-brand">Attend<span class="brand-accent">X</span></a>
         <div class="nav-links">
             {% if current_user.is_authenticated %}
             {% if current_user.role == 'admin' %}
