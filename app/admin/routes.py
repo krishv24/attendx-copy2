@@ -166,7 +166,11 @@ def student_pdf(id):
     pdf.set_font("helvetica", "", 11)
     if recs:
         for r in recs:
-            pdf.multi_cell(0, 8, f"• {r.message}")
+            safe_msg = str(r.message).replace('\xa0', ' ').replace('•', '-').replace('‘', "'").replace('’', "'").replace('“', '"').replace('”', '"').replace('—', '-')
+            safe_msg = safe_msg.encode('latin-1', 'replace').decode('latin-1')
+            pdf.set_x(10)
+            pdf.multi_cell(0, 8, f"- {safe_msg}")
+            pdf.ln(2)
     else:
         pdf.set_font("helvetica", "I", 11)
         pdf.set_text_color(MUTED_R, MUTED_G, MUTED_B)
