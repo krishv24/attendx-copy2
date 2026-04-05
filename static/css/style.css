@@ -187,7 +187,14 @@ a:hover {
     transform: translateY(-1px);
 }
 
-/* ── Stats Grid ────────────────────────────────────────── */
+/* ── Stats Grid & Dashboard Layout ───────────────────────── */
+.dashboard-content-grid {
+    display: grid;
+    grid-template-columns: 2fr 1.2fr;
+    gap: 2rem;
+    align-items: start;
+}
+
 .stats-grid,
 .details-grid {
     display: grid;
@@ -462,16 +469,19 @@ table.data-table {
 }
 
 .alert-item {
-    padding: 1rem 1.25rem;
-    border-left: 3px solid var(--border-color);
-    margin-bottom: 0.65rem;
-    background: var(--bg-color);
-    border-radius: var(--radius-sm);
+    padding: 1.25rem 1.5rem;
+    border: 1px solid var(--border-color);
+    border-left: 4px solid var(--border-color);
+    margin-bottom: 1rem;
+    background: var(--card-bg);
+    border-radius: var(--radius-md);
     font-weight: 400;
-    transition: background-color var(--transition);
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow var(--transition), transform var(--transition);
 }
 .alert-item:hover {
-    background: var(--border-light);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
 }
 
 .alert-risk { border-left-color: var(--danger-text); }
@@ -623,6 +633,9 @@ table.data-table {
     }
     .header-section h1 {
         font-size: 1.35rem;
+    }
+    .dashboard-content-grid {
+        grid-template-columns: 1fr;
     }
 }
 

@@ -28,20 +28,78 @@
     </div>
 </div>
 
-<div class="recent-alerts">
-    <h2>Recent Alerts</h2>
-    {% if recent_alerts %}
-        <ul class="alert-list">
-            {% for alert in recent_alerts %}
-                <li class="alert-item alert-{{ alert.alert_type }}">
-                    <strong>{{ alert.student.name }} ({{ alert.student.roll_number }}):</strong> 
-                    {{ alert.message }}
-                    <span class="date">{{ alert.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>No recent alerts.</p>
-    {% endif %}
+<div class="dashboard-content-grid">
+    <div class="recent-alerts">
+        <h2>Recent Alerts</h2>
+        {% if recent_alerts %}
+            <ul class="alert-list">
+                {% for alert in recent_alerts %}
+                    <li class="alert-item alert-{{ alert.alert_type }}">
+                        <strong>{{ alert.student.name }} ({{ alert.student.roll_number }}):</strong> 
+                        {{ alert.message }}
+                        <span class="date">{{ alert.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No recent alerts.</p>
+        {% endif %}
+    </div>
+
+    <div class="charts-section card">
+        <h2>Risk Distribution</h2>
+        <div style="position: relative; height: 300px; width: 100%; display: flex; justify-content: center;">
+            {% if total_students > 0 %}
+            <canvas id="riskChart"></canvas>
+            {% else %}
+            <p style="text-align: center; color: var(--text-muted); align-self: center;">No data available.</p>
+            {% endif %}
+        </div>
+    </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        if (!document.getElementById('riskChart')) return;
+        
+        const ctx = document.getElementById('riskChart').getContext('2d');
+        const riskChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Low Risk', 'Medium Risk', 'High Risk', 'Critical Risk'],
+                datasets: [{
+                    data: [{{ low_risk }}, {{ medium_risk }}, {{ high_risk }}, {{ critical_risk }}],
+                    backgroundColor: [
+                        '#16a34a', // success
+                        '#d97706', // warning
+                        '#ea580c', // intermediate
+                        '#dc2626'  // danger
+                    ],
+                    borderWidth: 2,
+                    borderColor: '#ffffff',
+                    hoverOffset: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 20,
+                            font: {
+                                family: "'Helvetica Neue', Helvetica, Arial, sans-serif"
+                            }
+                        }
+                    }
+                },
+                cutout: '75%'
+            }
+        });
+    });
+</script>
 {% endblock %}
