@@ -85,18 +85,31 @@ Navigate to `http://127.0.0.1:5000` in your browser.
 - Downloadable PDF reports with color-coded risk levels, attendance tables, and AI recommendations.
 
 ## 🎥 Demo Video
-[YouTube link here]
+Youtube Video Link: [Click here to redirect](https://youtu.be/WUscLOjIAsU)
 
 ## 👥 Team Members
-- Name 1
-- Name 2
-- Name 3
+- Shridhar Khare
+- Krish Vinod
+- Adithya Saji
+- Vedant Mahangade
+- Mahi Ugale
+- Soham Mali
+- Parth Mhatre
+- Sarvesh Mhatre
+- Anoushka Misra
+- Staphyrose Monteiro
+- Swaraj More
 
 ## 📌 GitHub Contributions
-- Name 1 – Contribution
-- Name 2 – Contribution
-- Name 3 – Contribution
-
+- **@krishv24** – Core full-stack implementation, analytics dashboards, Gemini implementation, and UI.  
+- **@shridharKhare** – Admin dashboard UX and analytics polish (routing fixes, chart/report improvements, caching/background run, UI tweaks)  
+- **@Adit041** – Backend stability work and onboarding improvements (Firebase migration, landing flow, dependency fixes, PDF export fix)  
+- **@mahiugale** – Frontend theme alignment and visual updates (branding color scheme changes)  
+- **@soham-mali** – Feature overview/usage guide added (`features_guide.md`)  
+- **@Parth-S-Mhatre** – Frontend work on landing page updates, plus support for AI agents workflow improvements  
+- **@SarveshSantoshMhatre** – README changes and licensing addition (MIT License)  
+- **@amishra22comp-tech** – README expansion and system diagram additions  
+- **@staphyrose0926** – Repository cleanup and documentation edits (README changes, script removals, `.gitignore` updates)  
 
 # Process Flow Diagram
 ```mermaid
