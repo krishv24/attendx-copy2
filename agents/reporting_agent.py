@@ -34,10 +34,14 @@ def generate_report_tool(input: str = "") -> str:
             return "No Gemini API key available."
         os.environ['GEMINI_API_KEY'] = api_key
         
+        recent_anomalies = [a for a in alerts if a.get('alert_type') == 'anomaly']
+        anam_text = "; ".join([f"{a.get('message')}" for a in recent_anomalies[:3]])
+        
         stats_summary = (
             f"Total Students: {len(students)}\n"
             f"Risk Distribution: {low} Low | {med} Medium | {high} High | {crit} Critical\n"
             f"Alerts Triggered: {len(alerts)}\n"
+            f"Recent Anomalies: {anam_text if anam_text else 'None'}\n"
             "Top At-Risk: "
         )
         
@@ -45,7 +49,13 @@ def generate_report_tool(input: str = "") -> str:
         for i, s in enumerate(at_risk[:10]):
             stats_summary += f"{s.get('name')} ({s.get('predicted_attendance',0):.1f}% risk: {s.get('risk_score')}), "
             
-        prompt = f"Write a comprehensive, professional executive summary (about 150 words) on student attendance and at risk models based on this data: {stats_summary}. Use descriptive paragraphs, not exact code formatting, but retain key numbers. Sign off as 'AI Attendance System'."
+        prompt = (
+            f"Write a highly actionable, concise, and heavily bulleted report based on this data: {stats_summary}.\n"
+            "Do NOT write a long essay. Format the report strictly with these two headers:\n"
+            "**Key Insights** (3 brief bullets max highlighting the biggest issues/anomalies)\n"
+            "**Immediate Actions Required** (Specific steps for the admin to take for the highly at-risk students).\n\n"
+            "Sign off as 'AI Attendance System'."
+        )
         
         try:
             report_content = get_cached_ai_response(prompt, api_key=api_key)

@@ -5,7 +5,8 @@ from app.admin import admin
 from app.models import Student, Attendance, Alert, Report, Config
 from app.extensions import db
 from datetime import datetime
-from functools import wraps
+from functools import wraps, lru_cache
+import threading
 from io import BytesIO
 from fpdf import FPDF
 
@@ -17,6 +18,11 @@ def admin_required(f):
             return redirect(url_for('auth.login'))
         return f(*args, **kwargs)
     return decorated_function
+
+@lru_cache(maxsize=128)
+def get_cached_student(student_id):
+    student_doc = db.collection('students').document(str(student_id)).get()
+    return Student.from_dict(student_doc.to_dict()) if student_doc.exists else None
 
 @admin.route('/dashboard')
 @login_required
@@ -34,8 +40,7 @@ def dashboard():
     recent_alerts = []
     for doc in alerts_ref:
         alert = Alert.from_dict(doc.to_dict())
-        student_doc = db.collection('students').document(str(alert.student_id)).get()
-        alert.student = Student.from_dict(student_doc.to_dict()) if student_doc.exists else None
+        alert.student = get_cached_student(alert.student_id)
         recent_alerts.append(alert)
     
     return render_template('admin/dashboard.html', 
@@ -212,8 +217,7 @@ def alerts():
     all_alerts = []
     for doc in alerts_ref:
         alert = Alert.from_dict(doc.to_dict())
-        student_doc = db.collection('students').document(str(alert.student_id)).get()
-        alert.student = Student.from_dict(student_doc.to_dict()) if student_doc.exists else None
+        alert.student = get_cached_student(alert.student_id)
         all_alerts.append(alert)
     return render_template('admin/alerts.html', alerts=all_alerts)
 
@@ -237,8 +241,9 @@ def run_analysis_view():
 def run_analysis_trigger():
     try:
         from crew.attendance_crew import run_attendance_analysis
-        run_attendance_analysis()
-        flash('Analysis finished successfully!', 'success')
+        thread = threading.Thread(target=run_attendance_analysis)
+        thread.start()
+        flash('Analysis strongly started in the background! It may take a few minutes. Check reports later.', 'success')
     except Exception as e:
         flash(f'Error running analysis: {e}', 'danger')
     return redirect(url_for('admin.reports'))
