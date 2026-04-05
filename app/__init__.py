@@ -43,11 +43,12 @@ def create_app(config_class=Config):
     @app.route('/')
     def index():
         from flask_login import current_user
+        from flask import render_template
         if current_user.is_authenticated:
             if current_user.role == 'admin':
                 return redirect(url_for('admin.dashboard'))
             else:
                 return redirect(url_for('student.dashboard'))
-        return redirect(url_for('auth.login'))
+        return render_template('landing.html')
 
     return app
