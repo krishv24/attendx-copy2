@@ -68,7 +68,7 @@ Navigate to `http://127.0.0.1:5000` in your browser.
 **Default Credentials:**
 | Role    | Email              | Password    |
 |---------|--------------------|-------------|
-| Admin   | admin@school.com   | admin123!   |
+| Admin   | admin@school.com   | admin123    |
 | Student | alice@school.com   | student123  |
 | Student | bob@school.com     | student123  |
 
