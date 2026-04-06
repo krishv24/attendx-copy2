@@ -1,566 +1,774 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Attendance System - Pillai College of Engineering</title>
-    <meta name="description" content="AI Based Student Attendance Management System">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary: #000000;
-            --primary-hover: #333333;
-            --primary-glow: rgba(0, 0, 0, 0.1);
-            --bg-color: #ffffff;
-            --text-main: #111111;
-            --text-muted: #666666;
-            --card-bg: #ffffff;
-            --card-border: #eaeaea;
-        }
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>AI Attendance System - Pillai College of Engineering</title>
+        <meta
+            name="description"
+            content="AI Based Student Attendance Management System"
+        />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap"
+            rel="stylesheet"
+        />
+        <style>
+            :root {
+                --primary: #000000;
+                --primary-hover: #333333;
+                --primary-glow: rgba(0, 0, 0, 0.1);
+                --bg-color: #ffffff;
+                --text-main: #111111;
+                --text-muted: #666666;
+                --card-bg: #ffffff;
+                --card-border: #eaeaea;
+            }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            line-height: 1.6;
-            overflow-x: hidden;
-            /* Sleek very subtle dot grid for light mode */
-            background-image: radial-gradient(#e5e5e5 1px, transparent 1px);
-            background-size: 30px 30px;
-        }
+            body {
+                font-family: "Inter", sans-serif;
+                background-color: var(--bg-color);
+                color: var(--text-main);
+                line-height: 1.6;
+                overflow-x: hidden;
+                /* Sleek very subtle dot grid for light mode */
+                background-image: radial-gradient(#e5e5e5 1px, transparent 1px);
+                background-size: 30px 30px;
+            }
 
-        /* Navbar */
-        header {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            border-bottom: 1px solid var(--card-border);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            z-index: 1000;
-            background: rgba(255, 255, 255, 0.85);
-        }
+            /* Navbar */
+            header {
+                position: fixed;
+                top: 0;
+                width: 100%;
+                border-bottom: 1px solid var(--card-border);
+                backdrop-filter: blur(16px);
+                -webkit-backdrop-filter: blur(16px);
+                z-index: 1000;
+                background: rgba(255, 255, 255, 0.85);
+            }
 
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+            .nav-container {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 1rem 2rem;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
 
-        .logo {
-            font-family: 'Outfit', sans-serif;
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: var(--text-main);
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            letter-spacing: -0.02em;
-        }
+            .logo {
+                font-family: "Outfit", sans-serif;
+                font-size: 1.5rem;
+                font-weight: 800;
+                color: var(--text-main);
+                text-decoration: none;
+                display: flex;
+                align-items: center;
+                letter-spacing: -0.02em;
+            }
 
-        .logo-accent {
-            color: var(--text-main);
-        }
+            .logo-accent {
+                color: var(--text-main);
+            }
 
-        .nav-links {
-            display: flex;
-            gap: 1.5rem;
-            align-items: center;
-        }
+            .nav-links {
+                display: flex;
+                gap: 1.5rem;
+                align-items: center;
+            }
 
-        .btn-outline {
-            color: var(--text-main);
-            text-decoration: none;
-            padding: 0.5rem 1.25rem;
-            border-radius: 9999px;
-            border: 1px solid var(--text-main);
-            font-weight: 500;
-            font-size: 0.9rem;
-            transition: all 0.2s ease;
-            background: transparent;
-        }
+            .btn-outline {
+                color: var(--text-main);
+                text-decoration: none;
+                padding: 0.5rem 1.25rem;
+                border-radius: 9999px;
+                border: 1px solid var(--text-main);
+                font-weight: 500;
+                font-size: 0.9rem;
+                transition: all 0.2s ease;
+                background: transparent;
+            }
 
-        .btn-outline:hover {
-            background: var(--text-main);
-            color: var(--bg-color);
-        }
+            .btn-outline:hover {
+                background: var(--text-main);
+                color: var(--bg-color);
+            }
 
-        .btn-primary {
-            background: var(--primary);
-            color: var(--bg-color);
-            text-decoration: none;
-            padding: 0.5rem 1.25rem;
-            border-radius: 9999px;
-            font-weight: 500;
-            font-size: 0.9rem;
-            border: 1px solid var(--primary);
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 14px var(--primary-glow);
-        }
+            .btn-primary {
+                background: var(--primary);
+                color: var(--bg-color);
+                text-decoration: none;
+                padding: 0.5rem 1.25rem;
+                border-radius: 9999px;
+                font-weight: 500;
+                font-size: 0.9rem;
+                border: 1px solid var(--primary);
+                transition: all 0.2s ease;
+                box-shadow: 0 4px 14px var(--primary-glow);
+            }
 
-        .btn-primary:hover {
-            transform: translateY(-1px);
-            background: var(--primary-hover);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-        }
+            .btn-primary:hover {
+                transform: translateY(-1px);
+                background: var(--primary-hover);
+                box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            }
 
-        /* Hero */
-        .hero {
-            padding: 11rem 2rem 5rem;
-            text-align: center;
-            max-width: 900px;
-            margin: 0 auto;
-            position: relative;
-        }
+            /* Hero */
+            .hero {
+                padding: 11rem 2rem 5rem;
+                text-align: center;
+                max-width: 900px;
+                margin: 0 auto;
+                position: relative;
+            }
 
-        .badge {
-            display: inline-block;
-            background: var(--bg-color);
-            border: 1px solid var(--text-main);
-            color: var(--text-main);
-            padding: 0.35rem 1.25rem;
-            border-radius: 9999px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-            margin-bottom: 2rem;
-            animation: fadeIn 1s ease-out;
-            box-shadow: 2px 2px 0px var(--text-main);
-        }
+            .badge {
+                display: inline-block;
+                background: var(--bg-color);
+                border: 1px solid var(--text-main);
+                color: var(--text-main);
+                padding: 0.35rem 1.25rem;
+                border-radius: 9999px;
+                font-size: 0.8rem;
+                font-weight: 600;
+                letter-spacing: 0.05em;
+                text-transform: uppercase;
+                margin-bottom: 2rem;
+                animation: fadeIn 1s ease-out;
+                box-shadow: 2px 2px 0px var(--text-main);
+            }
 
-        .hero h1 {
-            font-family: 'Outfit', sans-serif;
-            font-size: 4.5rem;
-            font-weight: 800;
-            line-height: 1.05;
-            letter-spacing: -0.03em;
-            margin-bottom: 1.5rem;
-            color: var(--text-main);
-            animation: slideUp 0.8s ease-out forwards;
-        }
+            .hero h1 {
+                font-family: "Outfit", sans-serif;
+                font-size: 4.5rem;
+                font-weight: 800;
+                line-height: 1.05;
+                letter-spacing: -0.03em;
+                margin-bottom: 1.5rem;
+                color: var(--text-main);
+                animation: slideUp 0.8s ease-out forwards;
+            }
 
-        .hero p {
-            font-size: 1.3rem;
-            color: var(--text-muted);
-            margin-bottom: 2.5rem;
-            line-height: 1.6;
-            max-width: 700px;
-            margin-left: auto;
-            margin-right: auto;
-            animation: slideUp 1s ease-out forwards;
-        }
+            .hero p {
+                font-size: 1.3rem;
+                color: var(--text-muted);
+                margin-bottom: 2.5rem;
+                line-height: 1.6;
+                max-width: 700px;
+                margin-left: auto;
+                margin-right: auto;
+                animation: slideUp 1s ease-out forwards;
+            }
 
-        .hero-actions {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            animation: slideUp 1.2s ease-out forwards;
-        }
+            .hero-actions {
+                display: flex;
+                justify-content: center;
+                gap: 1rem;
+                animation: slideUp 1.2s ease-out forwards;
+            }
 
-        .btn-hero {
-            padding: 0.85rem 2.2rem;
-            font-size: 1.05rem;
-        }
+            .btn-hero {
+                padding: 0.85rem 2.2rem;
+                font-size: 1.05rem;
+            }
 
-        /* Stats Section */
-        .stats {
-            max-width: 1200px;
-            margin: 0 auto 5rem;
-            padding: 0 2rem;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-        }
+            /* Stats Section */
+            .stats {
+                max-width: 1200px;
+                margin: 0 auto 5rem;
+                padding: 0 2rem;
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 1.5rem;
+            }
 
-        .stat-card {
-            background: var(--bg-color);
-            border: 1px solid var(--text-main);
-            border-radius: 12px;
-            padding: 2.5rem 1rem;
-            text-align: center;
-            transition: transform 0.3s ease;
-            box-shadow: 4px 4px 0px var(--card-border);
-        }
+            .stat-card {
+                background: var(--bg-color);
+                border: 1px solid var(--text-main);
+                border-radius: 12px;
+                padding: 2.5rem 1rem;
+                text-align: center;
+                transition: transform 0.3s ease;
+                box-shadow: 4px 4px 0px var(--card-border);
+            }
 
-        .stat-card:hover {
-            transform: translateY(-4px) translateX(-2px);
-            box-shadow: 6px 8px 0px var(--primary-glow);
-        }
+            .stat-card:hover {
+                transform: translateY(-4px) translateX(-2px);
+                box-shadow: 6px 8px 0px var(--primary-glow);
+            }
 
-        .stat-value {
-            font-family: 'Outfit', sans-serif;
-            font-size: 3rem;
-            font-weight: 800;
-            color: var(--text-main);
-            letter-spacing: -0.04em;
-            margin-bottom: 0.5rem;
-            line-height: 1;
-        }
+            .stat-value {
+                font-family: "Outfit", sans-serif;
+                font-size: 3rem;
+                font-weight: 800;
+                color: var(--text-main);
+                letter-spacing: -0.04em;
+                margin-bottom: 0.5rem;
+                line-height: 1;
+            }
 
-        .stat-label {
-            font-size: 0.95rem;
-            font-weight: 500;
-            color: var(--text-muted);
-        }
+            .stat-label {
+                font-size: 0.95rem;
+                font-weight: 500;
+                color: var(--text-muted);
+            }
 
-        /* Features Section */
-        .features {
-            max-width: 1200px;
-            margin: 6rem auto;
-            padding: 0 2rem;
-        }
+            /* Features Section */
+            .features {
+                max-width: 1200px;
+                margin: 6rem auto;
+                padding: 0 2rem;
+            }
 
-        .section-header {
-            text-align: center;
-            margin-bottom: 4.5rem;
-        }
+            .section-header {
+                text-align: center;
+                margin-bottom: 4.5rem;
+            }
 
-        .section-header h2 {
-            font-family: 'Outfit', sans-serif;
-            font-size: 2.8rem;
-            font-weight: 800;
-            letter-spacing: -0.03em;
-            color: var(--text-main);
-            margin-bottom: 1rem;
-        }
+            .section-header h2 {
+                font-family: "Outfit", sans-serif;
+                font-size: 2.8rem;
+                font-weight: 800;
+                letter-spacing: -0.03em;
+                color: var(--text-main);
+                margin-bottom: 1rem;
+            }
 
-        .section-header p {
-            color: var(--text-muted);
-            font-size: 1.15rem;
-            max-width: 600px;
-            margin: 0 auto;
-        }
+            .section-header p {
+                color: var(--text-muted);
+                font-size: 1.15rem;
+                max-width: 600px;
+                margin: 0 auto;
+            }
 
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-        }
+            .features-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 2rem;
+            }
 
-        .feature-card {
-            background: var(--bg-color);
-            border: 1px solid var(--card-border);
-            border-radius: 16px;
-            padding: 2.5rem;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-        }
+            .feature-card {
+                background: var(--bg-color);
+                border: 1px solid var(--card-border);
+                border-radius: 16px;
+                padding: 2.5rem;
+                transition: all 0.3s ease;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+            }
 
-        .feature-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
-            border-color: var(--primary);
-        }
+            .feature-card:hover {
+                transform: translateY(-6px);
+                box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+                border-color: var(--primary);
+            }
 
-        .feature-icon {
-            width: 54px;
-            height: 54px;
-            background: var(--text-main);
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 1.5rem;
-            color: var(--bg-color);
-            font-size: 1.5rem;
-        }
+            .feature-icon {
+                width: 54px;
+                height: 54px;
+                background: var(--text-main);
+                border-radius: 14px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: 1.5rem;
+                color: var(--bg-color);
+                font-size: 1.5rem;
+            }
 
-        .feature-title {
-            font-family: 'Outfit', sans-serif;
-            font-size: 1.35rem;
-            font-weight: 700;
-            color: var(--text-main);
-            margin-bottom: 1rem;
-        }
+            .feature-title {
+                font-family: "Outfit", sans-serif;
+                font-size: 1.35rem;
+                font-weight: 700;
+                color: var(--text-main);
+                margin-bottom: 1rem;
+            }
 
-        .feature-desc {
-            color: var(--text-muted);
-            font-size: 1rem;
-            line-height: 1.6;
-        }
+            .feature-desc {
+                color: var(--text-muted);
+                font-size: 1rem;
+                line-height: 1.6;
+            }
 
-        /* Contributions Section */
-        .contributions {
-            max-width: 1200px;
-            margin: 8rem auto 5rem;
-            padding: 0 2rem;
-        }
+            /* Contributions Section */
+            .contributions {
+                max-width: 1200px;
+                margin: 8rem auto 5rem;
+                padding: 0 2rem;
+            }
 
-        .contrib-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 1.5rem;
-        }
+            .contrib-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 1.5rem;
+            }
 
-        .contrib-card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 12px;
-            padding: 1.5rem;
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            transition: all 0.2s ease;
-        }
-        
-        .contrib-card:hover {
-            border-color: var(--text-main);
-        }
+            .contrib-card {
+                background: var(--card-bg);
+                border: 1px solid var(--card-border);
+                border-radius: 12px;
+                padding: 1.5rem;
+                display: flex;
+                flex-direction: column;
+                gap: 0.5rem;
+                transition: all 0.2s ease;
+            }
 
-        .contrib-avatar {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            background: #f1f1f1;
-            border: 1px solid var(--card-border);
-            margin-bottom: 0.5rem;
-        }
+            .contrib-card:hover {
+                border-color: var(--text-main);
+            }
 
-        .contrib-name {
-            font-family: 'Outfit', sans-serif;
-            font-weight: 700;
-            color: var(--text-main);
-            font-size: 1.15rem;
-        }
+            .contrib-avatar {
+                width: 48px;
+                height: 48px;
+                border-radius: 50%;
+                background: #f1f1f1;
+                border: 1px solid var(--card-border);
+                margin-bottom: 0.5rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: var(--text-muted);
+            }
 
-        .contrib-text {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            line-height: 1.5;
-        }
+            .contrib-avatar-icon {
+                width: 22px;
+                height: 22px;
+                display: block;
+            }
 
-        /* Footer */
-        footer {
-            border-top: 1px solid var(--card-border);
-            padding: 3rem 2rem;
-            margin-top: 6rem;
-            text-align: center;
-            background: var(--bg-color);
-        }
+            .contrib-name {
+                font-family: "Outfit", sans-serif;
+                font-weight: 700;
+                color: var(--text-main);
+                font-size: 1.15rem;
+            }
 
-        .footer-text {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-        }
+            .contrib-text {
+                color: var(--text-muted);
+                font-size: 0.9rem;
+                line-height: 1.5;
+            }
 
-        .footer-link {
-            color: var(--text-main);
-            text-decoration: none;
-            font-weight: 600;
-            border-bottom: 1px solid var(--text-main);
-        }
+            /* Footer */
+            footer {
+                border-top: 1px solid var(--card-border);
+                padding: 3rem 2rem;
+                margin-top: 6rem;
+                text-align: center;
+                background: var(--bg-color);
+            }
 
-        .footer-link:hover {
-            color: var(--text-muted);
-            border-bottom-color: var(--text-muted);
-        }
+            .footer-text {
+                color: var(--text-muted);
+                font-size: 0.9rem;
+                margin-bottom: 0.5rem;
+                font-weight: 500;
+            }
 
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+            .footer-link {
+                color: var(--text-main);
+                text-decoration: none;
+                font-weight: 600;
+                border-bottom: 1px solid var(--text-main);
+            }
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
+            .footer-link:hover {
+                color: var(--text-muted);
+                border-bottom-color: var(--text-muted);
+            }
 
-        @media (max-width: 768px) {
-            .hero h1 { font-size: 3rem; }
-            .hero p { font-size: 1.1rem; }
-            .nav-links { display: none; }
-        }
-    </style>
-</head>
-<body>
+            @keyframes slideUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
 
-    <header>
-        <div class="nav-container">
-            <a href="/" class="logo">
-                Attend<span class="logo-accent">X</span>
-            </a>
-            <div class="nav-links">
-                {% if current_user.is_authenticated %}
-                    {% if current_user.role == 'admin' %}
-                        <a href="{{ url_for('admin.dashboard') }}" class="btn-outline">Dashboard</a>
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                }
+                to {
+                    opacity: 1;
+                }
+            }
+
+            @media (max-width: 768px) {
+                .hero h1 {
+                    font-size: 3rem;
+                }
+                .hero p {
+                    font-size: 1.1rem;
+                }
+                .nav-links {
+                    display: none;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            style="position: absolute; width: 0; height: 0; overflow: hidden"
+            aria-hidden="true"
+            focusable="false"
+        >
+            <symbol id="icon-user" viewBox="0 0 24 24">
+                <circle
+                    cx="12"
+                    cy="8"
+                    r="3.25"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.75"
+                />
+                <path
+                    d="M4.5 20c.8-3.5 4-5.75 7.5-5.75S18.2 16.5 19.5 20"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.75"
+                    stroke-linecap="round"
+                />
+            </symbol>
+        </svg>
+        <header>
+            <div class="nav-container">
+                <a href="/" class="logo">
+                    Attend<span class="logo-accent">X</span>
+                </a>
+                <div class="nav-links">
+                    {% if current_user.is_authenticated %} {% if
+                    current_user.role == 'admin' %}
+                    <a
+                        href="{{ url_for('admin.dashboard') }}"
+                        class="btn-outline"
+                        >Dashboard</a
+                    >
                     {% else %}
-                        <a href="{{ url_for('student.dashboard') }}" class="btn-outline">Dashboard</a>
+                    <a
+                        href="{{ url_for('student.dashboard') }}"
+                        class="btn-outline"
+                        >Dashboard</a
+                    >
                     {% endif %}
-                    <a href="{{ url_for('auth.logout') }}" class="btn-primary">Logout</a>
+                    <a href="{{ url_for('auth.logout') }}" class="btn-primary"
+                        >Logout</a
+                    >
+                    {% else %}
+                    <a href="{{ url_for('auth.login') }}" class="btn-outline"
+                        >Log in</a
+                    >
+                    <a href="{{ url_for('auth.register') }}" class="btn-primary"
+                        >Register</a
+                    >
+                    {% endif %}
+                </div>
+            </div>
+        </header>
+
+        <section class="hero">
+            <div class="badge">PCE Academic Initiative</div>
+            <h1>Smarter attendance management, powered by AI agents.</h1>
+            <p>
+                Log attendance, track risks in real-time, and let AI handle
+                predictive modeling and alerts — so no student falls through the
+                cracks.
+            </p>
+            <div class="hero-actions">
+                {% if current_user.is_authenticated %} {% if current_user.role
+                == 'admin' %}
+                <a
+                    href="{{ url_for('admin.dashboard') }}"
+                    class="btn-primary btn-hero"
+                    >Go to Dashboard</a
+                >
                 {% else %}
-                    <a href="{{ url_for('auth.login') }}" class="btn-outline">Log in</a>
-                    <a href="{{ url_for('auth.register') }}" class="btn-primary">Register</a>
+                <a
+                    href="{{ url_for('student.dashboard') }}"
+                    class="btn-primary btn-hero"
+                    >Go to Dashboard</a
+                >
+                {% endif %} {% else %}
+                <a
+                    href="{{ url_for('auth.register') }}"
+                    class="btn-primary btn-hero"
+                    >Get Started</a
+                >
                 {% endif %}
+                <a href="#features" class="btn-outline btn-hero"
+                    >Explore Features</a
+                >
             </div>
-        </div>
-    </header>
+        </section>
 
-    <section class="hero">
-        <div class="badge">PCE Academic Initiative</div>
-        <h1>Smarter attendance management, powered by AI agents.</h1>
-        <p>Log attendance, track risks in real-time, and let AI handle predictive modeling and alerts — so no student falls through the cracks.</p>
-        <div class="hero-actions">
-            {% if current_user.is_authenticated %}
-                {% if current_user.role == 'admin' %}
-                    <a href="{{ url_for('admin.dashboard') }}" class="btn-primary btn-hero">Go to Dashboard</a>
-                {% else %}
-                    <a href="{{ url_for('student.dashboard') }}" class="btn-primary btn-hero">Go to Dashboard</a>
-                {% endif %}
-            {% else %}
-                <a href="{{ url_for('auth.register') }}" class="btn-primary btn-hero">Get Started</a>
-            {% endif %}
-            <a href="#features" class="btn-outline btn-hero">Explore Features</a>
-        </div>
-    </section>
+        <section class="stats">
+            <div class="stat-card">
+                <div class="stat-value">98%</div>
+                <div class="stat-label">Prediction Accuracy</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">6+</div>
+                <div class="stat-label">AI Agents Running</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">~1m</div>
+                <div class="stat-label">Avg Analysis Time</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">Automated</div>
+                <div class="stat-label">Risk Classification</div>
+            </div>
+        </section>
 
-    <section class="stats">
-        <div class="stat-card">
-            <div class="stat-value">98%</div>
-            <div class="stat-label">Prediction Accuracy</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-value">6+</div>
-            <div class="stat-label">AI Agents Running</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-value">~1m</div>
-            <div class="stat-label">Avg Analysis Time</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-value">Automated</div>
-            <div class="stat-label">Risk Classification</div>
-        </div>
-    </section>
+        <section id="features" class="features">
+            <div class="section-header">
+                <h2>
+                    Admins Don't Need Another Spreadsheet.<br />They Need a
+                    System That Works.
+                </h2>
+                <p>
+                    Powered by advanced NLP and CrewAI to intelligently monitor
+                    student success.
+                </p>
+            </div>
 
-    <section id="features" class="features">
-        <div class="section-header">
-            <h2>Admins Don't Need Another Spreadsheet.<br>They Need a System That Works.</h2>
-            <p>Powered by advanced NLP and CrewAI to intelligently monitor student success.</p>
-        </div>
-        
-        <div class="features-grid">
-            <div class="feature-card">
-                <div class="feature-icon">🔍</div>
-                <h3 class="feature-title">Smart Pattern Detection</h3>
-                <p class="feature-desc">Uses intelligent agents to automatically understand and categorize attendance patterns to detect massive absences.</p>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔍</div>
+                    <h3 class="feature-title">Smart Pattern Detection</h3>
+                    <p class="feature-desc">
+                        Uses intelligent agents to automatically understand and
+                        categorize attendance patterns to detect massive
+                        absences.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3 class="feature-title">Predictive Risk Scoring</h3>
+                    <p class="feature-desc">
+                        AI assigns predictive risk scores (Low, Medium, High,
+                        Critical) to highlight students who need immediate
+                        attention.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3 class="feature-title">Real-Time Dashboards</h3>
+                    <p class="feature-desc">
+                        Students and administrators can track their attendance
+                        status with live updates at every stage of the semester.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🤖</div>
+                    <h3 class="feature-title">AI Recommendation Engine</h3>
+                    <p class="feature-desc">
+                        An intelligent agent that provides personalized advice,
+                        mentoring suggestions, and academic support paths.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📑</div>
+                    <h3 class="feature-title">Automated Reporting</h3>
+                    <p class="feature-desc">
+                        Generates highly actionable, concise administrative
+                        reports highlighting key anomalies without manual
+                        intervention.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔔</div>
+                    <h3 class="feature-title">Instant Alerts</h3>
+                    <p class="feature-desc">
+                        Automatically sends alerts when critical attendance
+                        drops are detected, helping institutions take preventive
+                        action.
+                    </p>
+                </div>
             </div>
-            <div class="feature-card">
-                <div class="feature-icon">⚡</div>
-                <h3 class="feature-title">Predictive Risk Scoring</h3>
-                <p class="feature-desc">AI assigns predictive risk scores (Low, Medium, High, Critical) to highlight students who need immediate attention.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">📊</div>
-                <h3 class="feature-title">Real-Time Dashboards</h3>
-                <p class="feature-desc">Students and administrators can track their attendance status with live updates at every stage of the semester.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">🤖</div>
-                <h3 class="feature-title">AI Recommendation Engine</h3>
-                <p class="feature-desc">An intelligent agent that provides personalized advice, mentoring suggestions, and academic support paths.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">📑</div>
-                <h3 class="feature-title">Automated Reporting</h3>
-                <p class="feature-desc">Generates highly actionable, concise administrative reports highlighting key anomalies without manual intervention.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">🔔</div>
-                <h3 class="feature-title">Instant Alerts</h3>
-                <p class="feature-desc">Automatically sends alerts when critical attendance drops are detected, helping institutions take preventive action.</p>
-            </div>
-        </div>
-    </section>
+        </section>
 
         <section class="contributions">
-        <div class="section-header">
-            <h2>Project Contributors</h2>
-            <p>The talented minds behind the AI Attendance System</p>
-        </div>
-        <div class="contrib-grid">
-            <!-- Member 1 -->
-            <div class="contrib-card">
-                
-                <div class="contrib-name">Shridhar Khare</div>
-                <div class="contrib-text">Admin dashboard UX and analytics polish</div>
+            <div class="section-header">
+                <h2>Project Contributors</h2>
+                <p>The talented minds behind the AI Attendance System</p>
             </div>
-            <!-- Member 2 -->
-            <div class="contrib-card">
-                
-                <div class="contrib-name">Mahi Ugale</div>
-                <div class="contrib-text">Frontend theme alignment and visual updates</div>
-            </div>
-            <!-- Member 3 -->
-            <div class="contrib-card">
-                
-                <div class="contrib-name">Krish Vinod</div>
-                <div class="contrib-text">Core full-stack implementation, analytics dashboards, Gemini implementation, and UI</div>
-            </div>
-            <!-- Member 4 -->
-            <div class="contrib-card">
-                
-                <div class="contrib-name">Adithya Sajikumar</div>
-                <div class="contrib-text">Backend stability work and onboarding improvements (Firebase migration, landing flow, dependency fixes, PDF export fix)</div>
-            </div>
-            <!-- Member 5 -->
-            <div class="contrib-card">
-                
-                <div class="contrib-name">Staphyrose Monteiro</div>
-                <div class="contrib-text">Repository cleanup and documentation edits</div>
-            </div>
-            <!-- Member 6 -->
-            <div class="contrib-card">
-                
-                <div class="contrib-name">Anoushka Mishra</div>
-                <div class="contrib-text">README expansion and system diagram additions</div>
-            </div>
-            <!-- Member 7 -->
-            <div class="contrib-card">
-                
-                <div class="contrib-name">Sarvesh Santosh Mhatre</div>
-                <div class="contrib-text">README Changes and Licensing addition</div>
-            </div>
-            <!-- Member 8 -->
-            <div class="contrib-card">
-                
-                <div class="contrib-name">Soham Mali</div>
-                <div class="contrib-text">Feature overview/usage guide added</div>
-            </div>
-            <!-- Member 9 -->
-            <div class="contrib-card">
-                
-                <div class="contrib-name">Parth Mhatre</div>
-                <div class="contrib-text">Frontend Work on landing page updates, plus support for AI Agents workflow improvements</div>
-            </div>
-            <!-- Member 10 -->
-            <div class="contrib-card">
-                
-                <div class="contrib-name">Member Name 10</div>
-                <div class="contrib-text">Role/Contribution description for member 10 goes here.</div>
-            </div>
+            <div class="contrib-grid">
+                <!-- Row 1 -->
+                <div class="contrib-card">
+                    <div class="contrib-avatar" aria-hidden="true">
+                        <svg class="contrib-avatar-icon">
+                            <use href="#icon-user"></use>
+                        </svg>
+                    </div>
+                    <div class="contrib-name">Shridhar Khare</div>
+                    <div class="contrib-text">
+                        Admin dashboard UX and analytics polish (routing fixes,
+                        chart/report improvements, caching/background run, UI
+                        tweaks).
+                    </div>
+                </div>
 
-        </div>
-    </section>
+                <div class="contrib-card">
+                    <div class="contrib-avatar" aria-hidden="true">
+                        <svg class="contrib-avatar-icon">
+                            <use href="#icon-user"></use>
+                        </svg>
+                    </div>
+                    <div class="contrib-name">Krish Vinod</div>
+                    <div class="contrib-text">
+                        Core full-stack implementation, analytics dashboards,
+                        Gemini implementation, and UI.
+                    </div>
+                </div>
 
-    <footer>
-        <div class="footer-text">Dr. K.M. Vasudevan Pillai Campus<br>New Panvel, Navi Mumbai — 410206</div>
-        <div class="footer-text">© 2026 Pillai College of Engineering. All rights reserved.</div>
-        <div class="footer-text" style="margin-top: 1rem;">
-            Developed as part of learning at <a href="https://www.pce.ac.in" target="_blank" class="footer-link">Pillai College of Engineering (PCE)</a>
-        </div>
-    </footer>
+                <div class="contrib-card">
+                    <div class="contrib-avatar" aria-hidden="true">
+                        <svg class="contrib-avatar-icon">
+                            <use href="#icon-user"></use>
+                        </svg>
+                    </div>
+                    <div class="contrib-name">Adithya Sajikumar</div>
+                    <div class="contrib-text">
+                        Backend stability work and onboarding improvements
+                        (Firebase migration, landing flow, dependency fixes, PDF
+                        export fix).
+                    </div>
+                </div>
 
-</body>
+                <div class="contrib-card">
+                    <div class="contrib-avatar" aria-hidden="true">
+                        <svg class="contrib-avatar-icon">
+                            <use href="#icon-user"></use>
+                        </svg>
+                    </div>
+                    <div class="contrib-name">Vedant Mahangade</div>
+                    <div class="contrib-text">
+                        Repo Cleanup &amp; Stability, Documentation (removed
+                        unused files and configs)
+                    </div>
+                </div>
+
+                <!-- Row 2 -->
+                <div class="contrib-card">
+                    <div class="contrib-avatar" aria-hidden="true">
+                        <svg class="contrib-avatar-icon">
+                            <use href="#icon-user"></use>
+                        </svg>
+                    </div>
+                    <div class="contrib-name">Mahi Ugale</div>
+                    <div class="contrib-text">
+                        Frontend theme alignment and visual updates (branding
+                        color scheme changes).
+                    </div>
+                </div>
+
+                <div class="contrib-card">
+                    <div class="contrib-avatar" aria-hidden="true">
+                        <svg class="contrib-avatar-icon">
+                            <use href="#icon-user"></use>
+                        </svg>
+                    </div>
+                    <div class="contrib-name">Soham Mali</div>
+                    <div class="contrib-text">
+                        Feature overview and usage guide added
+                        (features_guide.md).
+                    </div>
+                </div>
+
+                <div class="contrib-card">
+                    <div class="contrib-avatar" aria-hidden="true">
+                        <svg class="contrib-avatar-icon">
+                            <use href="#icon-user"></use>
+                        </svg>
+                    </div>
+                    <div class="contrib-name">Parth Mhatre</div>
+                    <div class="contrib-text">
+                        Frontend work on landing page updates, plus support for
+                        AI agents workflow improvements.
+                    </div>
+                </div>
+
+                <div class="contrib-card">
+                    <div class="contrib-avatar" aria-hidden="true">
+                        <svg class="contrib-avatar-icon">
+                            <use href="#icon-user"></use>
+                        </svg>
+                    </div>
+                    <div class="contrib-name">Sarvesh Mhatre</div>
+                    <div class="contrib-text">
+                        README changes and licensing addition (MIT License).
+                    </div>
+                </div>
+
+                <!-- Row 3 -->
+                <div class="contrib-card">
+                    <div class="contrib-avatar" aria-hidden="true">
+                        <svg class="contrib-avatar-icon">
+                            <use href="#icon-user"></use>
+                        </svg>
+                    </div>
+                    <div class="contrib-name">Anoushka Misra</div>
+                    <div class="contrib-text">
+                        README expansion and system diagram additions.
+                    </div>
+                </div>
+
+                <div class="contrib-card">
+                    <div class="contrib-avatar" aria-hidden="true">
+                        <svg class="contrib-avatar-icon">
+                            <use href="#icon-user"></use>
+                        </svg>
+                    </div>
+                    <div class="contrib-name">Staphyrose Monteiro</div>
+                    <div class="contrib-text">
+                        Repository cleanup and documentation edits (README
+                        changes, script removals, .gitignore updates).
+                    </div>
+                </div>
+
+                <div class="contrib-card">
+                    <div class="contrib-avatar" aria-hidden="true">
+                        <svg class="contrib-avatar-icon">
+                            <use href="#icon-user"></use>
+                        </svg>
+                    </div>
+                    <div class="contrib-name">Swaraj More</div>
+                    <div class="contrib-text">
+                        Repo hygiene, README updates and landing page content
+                        updates
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <div class="footer-text">
+                Dr. K.M. Vasudevan Pillai Campus<br />New Panvel, Navi Mumbai —
+                410206
+            </div>
+            <div class="footer-text">
+                © 2026 Pillai College of Engineering. All rights reserved.
+            </div>
+            <div class="footer-text" style="margin-top: 1rem">
+                Developed as part of learning at
+                <a
+                    href="https://www.pce.ac.in"
+                    target="_blank"
+                    class="footer-link"
+                    >Pillai College of Engineering (PCE)</a
+                >
+            </div>
+        </footer>
+    </body>
 </html>
