@@ -27,6 +27,11 @@
                 class="{{ 'active' if 'run_analysis' in request.endpoint }}">Run Analysis</a>
             <a href="{{ url_for('admin.settings') }}"
                 class="{{ 'active' if 'settings' in request.endpoint }}">Settings</a>
+            {% elif current_user.role == "teacher" %}
+            <a href="{{ url_for('teacher.dashboard') }}"
+                class="{{ 'active' if 'dashboard' in request.endpoint }}">Dashboard</a>
+            <a href="{{ url_for('teacher.manual_attendance') }}"
+                class="{{ 'active' if 'attendance' in request.endpoint }}">Mark Attendance</a>
             {% else %}
             <a href="{{ url_for('student.dashboard') }}"
                 class="{{ 'active' if 'dashboard' in request.endpoint }}">Dashboard</a>

@@ -1,0 +1,97 @@
+{% extends 'base.html' %} {% block content %}
+<div class="header-section">
+    <h1>Mark Manual Attendance</h1>
+    <p class="subtitle">Select Date and Subject to log records</p>
+</div>
+
+<div class="card">
+    <form method="POST" action="{{ url_for('teacher.manual_attendance') }}">
+        <div class="grid-container" style="margin-bottom: 20px">
+            <div>
+                <label for="date"><strong>Date:</strong></label
+                ><br />
+                <input
+                    type="date"
+                    id="date"
+                    name="date"
+                    value="{{ today }}"
+                    required
+                    class="form-control"
+                    style="width: 100%; max-width: 250px; padding: 8px"
+                />
+            </div>
+            <div>
+                <label for="subject"><strong>Subject:</strong></label
+                ><br />
+                <select
+                    id="subject"
+                    name="subject"
+                    required
+                    class="form-control"
+                    style="width: 100%; max-width: 250px; padding: 8px"
+                >
+                    <option value="" disabled selected>Select a subject</option>
+                    <option value="Mathematics">Mathematics</option>
+                    <option value="Physics">Physics</option>
+                    <option value="Computer Science">Computer Science</option>
+                    <option value="Chemistry">Chemistry</option>
+                    <option value="English">English</option>
+                </select>
+            </div>
+        </div>
+
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Roll No</th>
+                    <th>Name</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for st in students %}
+                <tr>
+                    <td>{{ st.roll_number }}</td>
+                    <td>{{ st.name }}</td>
+                    <td>
+                        <label style="margin-right: 10px; cursor: pointer">
+                            <input
+                                type="radio"
+                                name="status_{{ st.id }}"
+                                value="Present"
+                                required
+                            />
+                            Present
+                        </label>
+                        <label style="cursor: pointer">
+                            <input
+                                type="radio"
+                                name="status_{{ st.id }}"
+                                value="Absent"
+                            />
+                            Absent
+                        </label>
+                        <!-- Add Late if you want an extra state -->
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="3">No students found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div style="margin-top: 20px; text-align: right">
+            <a
+                href="{{ url_for('teacher.dashboard') }}"
+                class="btn btn-secondary"
+                >Cancel</a
+            >
+            <button type="submit" class="btn btn-primary">
+                Submit Attendance
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

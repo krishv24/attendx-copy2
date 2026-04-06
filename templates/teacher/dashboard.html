@@ -1,0 +1,31 @@
+{% extends 'base.html' %} {% block content %}
+<div class="header-section">
+    <h1>Teacher Dashboard</h1>
+    <p class="subtitle">Welcome back, {{ current_user.name }}</p>
+</div>
+
+<div class="grid-container">
+    <div class="card summary-card">
+        <h3>Take Class Attendance</h3>
+        <p>Mark daily attendance per subject manually.</p>
+        <a
+            href="{{ url_for('teacher.manual_attendance') }}"
+            class="btn btn-primary"
+            style="margin-top: 15px"
+            >Mark Attendance</a
+        >
+    </div>
+
+    <!-- Bulk Upload placeholder, can add link here later when ready -->
+    <div class="card summary-card">
+        <h3>Bulk Upload Attendance</h3>
+        <p>Using a CSV roster? Upload it here to process quickly.</p>
+        <a
+            href="{{ url_for('teacher.csv_upload') }}"
+            class="btn btn-secondary"
+            style="margin-top: 15px"
+            >Upload CSV</a
+        >
+    </div>
+</div>
+{% endblock %}

@@ -12,4 +12,4 @@ cryptography
 google-generativeai
 firebase-admin
 gunicorn
-fpdf2
+fpdf2litellm
