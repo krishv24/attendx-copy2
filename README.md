@@ -38,8 +38,8 @@ Traditional attendance systems only record data, they don't act on it. This proj
 Steps to run the project:
 
 ```bash
-git clone https://github.com/krishv24/NLP-rewritten.git
-cd NLP-rewritten
+git clone https://github.com/krishv24/attendx-copy2
+cd attendx-copy2
 pip install -r requirements.txt
 ```
 
@@ -101,15 +101,17 @@ Youtube Video Link: [Click here to redirect](https://youtu.be/WUscLOjIAsU)
 - Swaraj More
 
 ## 📌 GitHub Contributions
-- **@krishv24** – Core full-stack implementation, analytics dashboards, Gemini implementation, and UI.  
-- **@shridharKhare** – Admin dashboard UX and analytics polish (routing fixes, chart/report improvements, caching/background run, UI tweaks)  
-- **@Adit041** – Backend stability work and onboarding improvements (Firebase migration, landing flow, dependency fixes, PDF export fix)  
-- **@mahiugale** – Frontend theme alignment and visual updates (branding color scheme changes)  
-- **@soham-mali** – Feature overview/usage guide added (`features_guide.md`)  
-- **@Parth-S-Mhatre** – Frontend work on landing page updates, plus support for AI agents workflow improvements  
-- **@SarveshSantoshMhatre** – README changes and licensing addition (MIT License)  
-- **@amishra22comp-tech** – README expansion and system diagram additions  
-- **@staphyrose0926** – Repository cleanup and documentation edits (README changes, script removals, `.gitignore` updates)  
+- **@krishv24** - Core full-stack implementation, analytics dashboards, Gemini implementation, and UI.  
+- **@shridharkhare** - Admin dashboard UX and analytics polish (routing fixes, chart/report improvements, caching/background run, UI tweaks)  
+- **@Adit041** - Backend stability work and onboarding improvements (Firebase migration, landing flow, dependency fixes, PDF export fix)  
+- **@mahiugale** - Frontend theme alignment and visual updates (branding color scheme changes)  
+- **@soham-mali** - Feature overview/usage guide added (`features_guide.md`)  
+- **@Parth-S-Mhatre** - Frontend work on landing page updates, plus support for AI agents workflow improvements  
+- **@SarveshSantoshMhatre** - README changes and licensing addition (MIT License)  
+- **@amishra22comp-tech** - README expansion and system diagram additions  
+- **@staphyrose0926** - Repository cleanup and documentation edits (README changes, script removals, `.gitignore` updates)
+- **@mswaraj23comp** - Repo hygiene , README Updates and landing page content updates
+- **@mvedant23comp-cloud** - Repo Cleanup & Stability, Documentation (removed unused files and configs)
 
 # Process Flow Diagram
 ```mermaid
