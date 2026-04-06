@@ -8,6 +8,7 @@ crewai[google-genai]
 pandas
 scikit-learn
 python-dotenv
+markdown
 cryptography
 google-generativeai
 firebase-admin

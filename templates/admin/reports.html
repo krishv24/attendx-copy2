@@ -1,24 +1,26 @@
-{% extends 'base.html' %}
-{% block content %}
+{% extends 'base.html' %} {% block content %}
 <div class="header-section">
     <h1>Generated AI Reports</h1>
 </div>
 
 {% if reports %}
-    <div class="reports-list">
-        {% for report in reports %}
-            <div class="card report-card">
-                <h3>{{ report.title }}</h3>
-                <p class="subtitle">Generated on: {{ report.generated_at.strftime('%Y-%m-%d %H:%M:%S') }}</p>
-                <div class="report-content">
-                    <pre>{{ report.content }}</pre>
-                </div>
-            </div>
-        {% endfor %}
+<div class="reports-list">
+    {% for report in reports %}
+    <div class="card report-card">
+        <h3>{{ report.title }}</h3>
+        <p class="subtitle">
+            Generated on: {{ report.generated_at.strftime('%Y-%m-%d %H:%M:%S')
+            }}
+        </p>
+        <div class="report-content">{{ report.rendered_content }}</div>
     </div>
+    {% endfor %}
+</div>
 {% else %}
-    <div class="card">
-        <p>No reports generated yet. Use the "Run Analysis" page to generate a new report.</p>
-    </div>
-{% endif %}
-{% endblock %}
+<div class="card">
+    <p>
+        No reports generated yet. Use the "Run Analysis" page to generate a new
+        report.
+    </p>
+</div>
+{% endif %} {% endblock %}
