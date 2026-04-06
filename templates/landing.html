@@ -295,6 +295,37 @@
                 line-height: 1.6;
             }
 
+            /* Demo Video */
+            .demo-video {
+                max-width: 960px;
+                margin: 8rem auto 0;
+                padding: 0 2rem;
+            }
+
+            .video-frame-wrap {
+                background: var(--card-bg);
+                border: 1px solid var(--card-border);
+                border-radius: 16px;
+                padding: 0.75rem;
+            }
+
+            .video-frame {
+                position: relative;
+                width: 100%;
+                padding-top: 56.25%;
+                border-radius: 12px;
+                overflow: hidden;
+                background: var(--bg-color);
+            }
+
+            .video-frame iframe {
+                position: absolute;
+                inset: 0;
+                width: 100%;
+                height: 100%;
+                border: 0;
+            }
+
             /* Contributions Section */
             .contributions {
                 max-width: 1200px;
@@ -601,21 +632,32 @@
         <section class="demo-video">
             <div class="section-header">
                 <h2>See AttendX In Action</h2>
-                <p>A quick walkthrough of the platform before you meet the contributors behind it.</p>
+                <p>
+                    A quick walkthrough of the platform before you meet the
+                    contributors behind it.
+                </p>
             </div>
             <div class="video-frame-wrap">
                 <div class="video-frame">
                     <iframe
                         src="https://www.youtube.com/embed/WUscLOjIAsU?si=-flsYOoIoZHySYfH"
                         title="YouTube video player"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allow="
+                            accelerometer;
+                            autoplay;
+                            clipboard-write;
+                            encrypted-media;
+                            gyroscope;
+                            picture-in-picture;
+                            web-share;
+                        "
                         referrerpolicy="strict-origin-when-cross-origin"
-                        allowfullscreen>
+                        allowfullscreen
+                    >
                     </iframe>
                 </div>
             </div>
         </section>
-        
 
         <section class="contributions">
             <div class="section-header">

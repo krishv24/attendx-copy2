@@ -1,4 +1,4 @@
-## AI-Powered Student Attendance Management System
+# AI-Powered Student Attendance Management System
 
 ## 🎓 Academic Details
 - **Course:** Natural Language Processing (NLP)
