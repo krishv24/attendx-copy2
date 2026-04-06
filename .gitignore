@@ -7,6 +7,8 @@ env/
 ENV/
 env.bak/
 venv.bak/
+firebase-credentials*
+backups/
 
 # API Cache (CrewAI / LiteLLM calls)
 ai_cache.json
